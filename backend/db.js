@@ -1,0 +1,50 @@
+const mongoose = require("mongoose");
+const uri = "mongodb+srv://snehashah0854:snehapraharsh1234@cluster0.q1u9itn.mongodb.net/MERN1?retryWrites=true&w=majority";
+// Database
+const database = (module.exports = () => {
+  const connectionParams = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  };
+  try {
+    mongoose.connect(
+      uri,
+      connectionParams
+    );
+    console.log("Database connected succesfully");
+  } catch (error) {
+    console.log(error);
+    console.log("Database connection failed");
+  }
+});
+
+database();
+
+const collectionSchema = new mongoose.Schema({
+    name:{
+        type:String,
+        required:true
+    },
+    cgpa:Number,
+
+})
+
+const Personal = new mongoose.model('Personal',collectionSchema);
+
+const createdocument = async ()=> {
+   try{
+        const data = new Personal({
+            name:"Praharsh",
+            cgpa:9
+        })
+
+        const result = await data.save();
+        console.log(result);
+   }
+   catch(err){
+    console.log(err);
+   }
+}
+
+createdocument();
+
