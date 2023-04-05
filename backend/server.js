@@ -17,7 +17,6 @@ const notesSchema = {
 
 const path1 = path.join(__dirname, "../frontend/index.html");
 console.log(path1);
-const path = `${__dirname}/../frontend/index.html`;
 
 const User = mongoose.model("Users",notesSchema);
 console.log(__dirname);
