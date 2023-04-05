@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const connection = require("./db");
 const { boolean } = require("joi");
+const path = require('path');
 app.use(bodyparser.urlencoded({extended: true}));
 
 // database connection
@@ -14,12 +15,13 @@ const notesSchema = {
 	verified: {type:Boolean,default:false}
 }
 
-
+const path1 = path.join(__dirname, "../frontend/index.html");
+console.log(path1);
 const User = mongoose.model("Users",notesSchema);
 console.log(__dirname);
 app.get("/",function(req,res){
     console.log("in get");
-    res.sendFile(__dirname+"/../frontend/index.html");
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
 })
 
 //app.post
