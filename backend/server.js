@@ -6,6 +6,7 @@ const connection = require("./db");
 const { boolean } = require("joi");
 const path = require('path');
 app.use(bodyparser.urlencoded({extended: true}));
+const sendEmail = require("./utils/sendEmail");
 
 // database connection
 connection();
@@ -27,15 +28,19 @@ app.get("/",function(req,res){
 
 //app.post
 
-app.post("/",function(req,res){
+app.post("/",async function(req,res){
+    let mail = req.body.email;
     let newNote = new User({
         email: req.body.email,
         verfied: false
     })
     newNote.save();
     console.log("in post ");
+    //module.exports = {mail}
+    await sendEmail(mail, "Verify Email", "Hi");
     res.redirect("/");
 })
+
 
 app.listen(3000, ()=>{
     console.log("Server on 3000");
