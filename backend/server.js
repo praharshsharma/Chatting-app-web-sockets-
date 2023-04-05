@@ -14,12 +14,13 @@ const notesSchema = {
 	verified: {type:Boolean,default:false}
 }
 
+const path = `${__dirname}/../frontend/index.html`;
 
 const User = mongoose.model("Users",notesSchema);
 console.log(__dirname);
 app.get("/",function(req,res){
     console.log("in get");
-    res.sendFile(__dirname+"/../frontend/index.html");
+    res.sendFile("/Users/praharshsharma/MERN1/frontend/index.html");
 })
 
 //app.post
@@ -34,6 +35,6 @@ app.post("/",function(req,res){
     res.redirect("/");
 })
 
-app.listen(5000, ()=>{
-    console.log("Server on 5000");
+app.listen(3000, ()=>{
+    console.log("Server on 3000");
 })
