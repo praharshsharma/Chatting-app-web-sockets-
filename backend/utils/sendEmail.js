@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const server = require("../server");
+const password = require("../password");
 module.exports = async (email, subject, text) => {
 	try {
 		const transporter = nodemailer.createTransport({
@@ -8,13 +8,13 @@ module.exports = async (email, subject, text) => {
 			port: 465,
 			secure: true,
 			auth: {
-				user: "praharshdeepaksharma@gmail.com",
-				pass: "aivszhvexlathqet",
+				user: password.email,
+				pass: password.pass,
 			},
 		});
 
 		await transporter.sendMail({
-			from: "praharshdeepaksharma@gmail.com",
+			from: password.email,
 			to: email,
 			subject: subject,
 			text: text,
