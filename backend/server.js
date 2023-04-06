@@ -49,7 +49,7 @@ app.post("/", async function (req, res) {
     // res.redirect("/");
 })
 
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
     console.log(req.url);
     // const requrl = req.url;
     // const mailid = "";
