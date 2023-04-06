@@ -3,7 +3,6 @@ const app = express();
 const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const connection = require("./db");
-const { boolean } = require("joi");
 const path = require('path');
 app.use(bodyparser.urlencoded({ extended: true }));
 const sendEmail = require("./utils/sendEmail");
