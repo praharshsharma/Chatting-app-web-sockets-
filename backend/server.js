@@ -16,7 +16,7 @@ connection();
 
 const notesSchema = {
     email: { type: String, required: true },
-    verified: { type: Boolean, default: false }
+    verified: { type: Boolean, required: true ,default:false}
 }
 
 const User = mongoose.model("Users", notesSchema);
@@ -36,47 +36,29 @@ app.post("/", async function (req, res) {
     });
     await token.save();
     const url = `${password.baseurl}/${mail}/verify/${token.token}`;
-    // let newNote = new User({
-    //     email: req.body.email,
-    //     verfied: false
-    // })
-    // newNote.save();
     console.log("in post ");
-    //module.exports = {mail}
     await sendEmail(mail, "Verify Email", url);
     // res.redirect("/");
 })
 
-app.get("/:id/verify/:token", async (req, res) => {
+app.get("//:id/verify/:token", async (req, res) => {
     console.log(req.url);
-    // const requrl = req.url;
-    // const mailid = "";
-    // const to = "";
-    // let i =2;
-    // while(requrl[i]!='/'){
-    //     mailid.concat(requrl[i]);
-    //     i++;
-    // }
-    // i+=7;
-    // while(i!=requrl.length){
-    //     to.concat(requrl[i]);
-    //     i++;
-    // }
-    // console.log(mailid);
-    // console.log(to);
     console.log("in get verify");
     try {
-        // const token = await Token.findOne({
-        //     userId: req.params.id,
-        //     token: req.params.token,
-        // });
-        // if (!token) return res.status(400).send({ message: "Invalid link" });
-        // let newNote = new User({
-        //     email: req.params.id,
-        //     verfied: true
-        // })
-        // newNote.save();
-        // await token.remove();
+        console.log(req.params.id);
+        console.log(req.params.token);
+        const token = await Token.Model.findOne({
+            userId: req.params.id,
+            token: req.params.token,
+        });
+        console.log(token);
+        if (!token) return res.status(400).send({ message: "Invalid link" });
+        let newNote = new User({
+            email: req.params.id,
+            verified: true
+        })
+        await newNote.save();
+        await token.deleteOne();
         console.log("in try ");
 
     } catch (error) {
