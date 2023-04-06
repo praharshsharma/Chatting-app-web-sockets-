@@ -14,12 +14,12 @@ const crypto = require("crypto");
 connection();
 
 const notesSchema = {
-    email: { type: String, required: true },
-    fname:{type: String, required: true},
-    lname:{type: String, required: true},
-    password:{type: String, required: true},
-    mnum:{type: String, required: true},
-    verified: { type: Boolean, required: true ,default:false}
+    email: { type: String, required: true, unique: true },
+    fname: { type: String, required: true },
+    lname: { type: String, required: true },
+    password: { type: String, required: true },
+    mnum: { type: String, required: true },
+    verified: { type: Boolean, required: true, default: false }
 }
 
 const User = mongoose.model("Users", notesSchema);
@@ -44,12 +44,36 @@ app.post("/", async function (req, res) {
     // res.redirect("/");
 })
 
-app.get("/signin" , async (req,res)=> {
+app.get("/signin", async (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend/signin.html"));
 
-    app.post("/signin", async (req,res)=> {
-        
+    app.post("/signin", async (req, res) => {
+        console.log("in sign in ");
+        const user = await User.findOne({
+            email: req.body.email
+        });
+        console.log(user);
+        console.log(user.password);
+        if (user) {
+            if (user.password == req.body.password) {
+                res.redirect("/home");
+            }
+            else {
+                res.send("Invalid password");
+            }
+        }
+        else {
+            res.send("Invalid user");
+        }
     })
+})
+
+app.get("/home", async (req, res) => {
+    console.log("in home ");
+    //local storage
+
+    
+    res.sendFile(path.join(__dirname, "../frontend/home.html"));
 })
 
 app.get("//:id/verify/:token", async (req, res) => {
@@ -65,7 +89,7 @@ app.get("//:id/verify/:token", async (req, res) => {
         console.log(token);
         if (!token) return res.status(400).send({ message: "Invalid link" });
         res.sendFile(path.join(__dirname, "../frontend/info.html"));
-        app.post("//:id/verify/:token", async (req,res) => {
+        app.post("//:id/verify/:token", async (req, res) => {
             console.log("in verify post");
             let newNote = new User({
                 email: req.params.id,
@@ -76,9 +100,9 @@ app.get("//:id/verify/:token", async (req, res) => {
                 verified: true
             })
             await newNote.save();
+            await token.deleteOne();
             res.redirect("/signin");
         })
-        await token.deleteOne();
         console.log("in try ");
 
     } catch (error) {
