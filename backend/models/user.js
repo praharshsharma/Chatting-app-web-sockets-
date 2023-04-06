@@ -2,10 +2,8 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const connection = require("../db");
-const app = require("../../frontend/app");
 // const passwordComplexity = require("joi-password-complexity");
 connection();
-const mail = app.m;
 
 const userSchema = new mongoose.Schema({
 	// firstName: { type: String, required: true },
@@ -24,35 +22,35 @@ userSchema.methods.generateAuthToken = function () {
 
 const User = mongoose.model("user", userSchema);
 
-// const validate = (data) => {
-// 	const schema = Joi.object({
-// 		firstName: Joi.string().required().label("First Name"),
-// 		lastName: Joi.string().required().label("Last Name"),
-// 		email: Joi.string().email().required().label("Email"),
-// 		password: passwordComplexity().required().label("Password"),
-// 	});
-// 	return schema.validate(data);
-// };
+const validate = (data) => {
+	const schema = Joi.object({
+		firstName: Joi.string().required().label("First Name"),
+		lastName: Joi.string().required().label("Last Name"),
+		email: Joi.string().email().required().label("Email"),
+		password: passwordComplexity().required().label("Password"),
+	});
+	return schema.validate(data);
+};
 
 
 
-//module.exports = { User, validate };
+module.exports = { User, validate };
 
-module.exports = { User };
+//module.exports = { User };
 
-const createdocument = async ()=> {
-	   try{
-	        const data = new User({
-	            email:mail,
-	            verified:false
-	        })
+// const createdocument = async ()=> {
+// 	   try{
+// 	        const data = new User({
+// 	            email:mail,
+// 	            verified:false
+// 	        })
 	
-	        const result = await data.save();
-	        console.log(result);
-	   }
-	   catch(err){
-	    console.log(err);
-	   }
-	}
+// 	        const result = await data.save();
+// 	        console.log(result);
+// 	   }
+// 	   catch(err){
+// 	    console.log(err);
+// 	   }
+// 	}
 	
-createdocument();
+// createdocument();

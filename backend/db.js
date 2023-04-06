@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const uri = "mongodb+srv://snehashah0854:snehapraharsh1234@cluster0.q1u9itn.mongodb.net/MERN1?retryWrites=true&w=majority&ssl=true";
+
 // Database
 module.exports = () => {
   const connectionParams = {
@@ -9,7 +10,8 @@ module.exports = () => {
   try {
     mongoose.connect(
       uri,
-      connectionParams
+      connectionParams,
+      {connectTimeoutMS: 10000}
     );
     console.log("Database connected succesfully");
   } catch (error) {

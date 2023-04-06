@@ -7,6 +7,9 @@ const { boolean } = require("joi");
 const path = require('path');
 app.use(bodyparser.urlencoded({extended: true}));
 const sendEmail = require("./utils/sendEmail");
+const Token = require("./models/token");
+const password = require("./password");
+const crypto = require("crypto");
 
 // database connection
 connection();
@@ -16,11 +19,8 @@ const notesSchema = {
 	verified: {type:Boolean,default:false}
 }
 
-const path1 = path.join(__dirname, "../frontend/index.html");
-console.log(path1);
-
 const User = mongoose.model("Users",notesSchema);
-console.log(__dirname);
+
 app.get("/",function(req,res){
     console.log("in get");
     res.sendFile(path.join(__dirname, "../frontend/index.html"));
@@ -30,14 +30,20 @@ app.get("/",function(req,res){
 
 app.post("/",async function(req,res){
     let mail = req.body.email;
-    let newNote = new User({
-        email: req.body.email,
-        verfied: false
-    })
-    newNote.save();
+    let token = await new Token.Model({
+        userId: mail,
+        token: crypto.randomBytes(32).toString("hex"),
+    });
+    await token.save();
+    const url = `${password.baseurl}/${mail}/verify/${token.token}`;
+    // let newNote = new User({
+    //     email: req.body.email,
+    //     verfied: false
+    // })
+    // newNote.save();
     console.log("in post ");
     //module.exports = {mail}
-    await sendEmail(mail, "Verify Email", "Hi");
+    await sendEmail(mail, "Verify Email", url);
     res.redirect("/");
 })
 
