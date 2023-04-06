@@ -15,6 +15,10 @@ connection();
 
 const notesSchema = {
     email: { type: String, required: true },
+    fname:{type: String, required: true},
+    lname:{type: String, required: true},
+    password:{type: String, required: true},
+    mnum:{type: String, required: true},
     verified: { type: Boolean, required: true ,default:false}
 }
 
@@ -22,7 +26,7 @@ const User = mongoose.model("Users", notesSchema);
 
 app.get("/", function (req, res) {
     console.log("in get");
-    res.sendFile(path.join(__dirname, "../frontend/index.html"));
+    res.sendFile(path.join(__dirname, "../frontend/signup.html"));
 })
 
 //app.post
@@ -40,6 +44,14 @@ app.post("/", async function (req, res) {
     // res.redirect("/");
 })
 
+app.get("/signin" , async (req,res)=> {
+    res.sendFile(path.join(__dirname, "../frontend/signin.html"));
+
+    app.post("/signin", async (req,res)=> {
+        
+    })
+})
+
 app.get("//:id/verify/:token", async (req, res) => {
     console.log(req.url);
     console.log("in get verify");
@@ -52,11 +64,20 @@ app.get("//:id/verify/:token", async (req, res) => {
         });
         console.log(token);
         if (!token) return res.status(400).send({ message: "Invalid link" });
-        let newNote = new User({
-            email: req.params.id,
-            verified: true
+        res.sendFile(path.join(__dirname, "../frontend/info.html"));
+        app.post("//:id/verify/:token", async (req,res) => {
+            console.log("in verify post");
+            let newNote = new User({
+                email: req.params.id,
+                fname: req.body.fname,
+                lname: req.body.lname,
+                password: req.body.password,
+                mnum: req.body.mnumber,
+                verified: true
+            })
+            await newNote.save();
+            res.redirect("/signin");
         })
-        await newNote.save();
         await token.deleteOne();
         console.log("in try ");
 
