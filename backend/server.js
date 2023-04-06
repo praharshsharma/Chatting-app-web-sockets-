@@ -47,7 +47,7 @@ app.post("/", async function (req, res) {
     // res.redirect("/");
 })
 
-app.get("//:id", async (req, res) => {
+app.get("/:id/verify/:token", async (req, res) => {
     console.log(req.url);
     // const requrl = req.url;
     // const mailid = "";
