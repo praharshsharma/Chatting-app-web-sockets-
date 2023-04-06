@@ -1,5 +1,7 @@
 const express = require("express");
+
 const app = express();
+const router = express.Router();
 const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const connection = require("./db");
@@ -47,7 +49,7 @@ app.post("/", async function (req, res) {
     // res.redirect("/");
 })
 
-app.get("//:id", async (req, res) => {
+router.get('/:id', (req, res) => {
     console.log(req.url);
     // const requrl = req.url;
     // const mailid = "";
