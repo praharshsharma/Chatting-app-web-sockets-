@@ -9,18 +9,27 @@ const sendEmail = require("./utils/sendEmail");
 const Token = require("./models/token");
 const password = require("./password");
 const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 
 // database connection
 connection();
 
-const notesSchema = {
+const notesSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     fname: { type: String, required: true },
     lname: { type: String, required: true },
     password: { type: String, required: true },
     mnum: { type: String, required: true },
     verified: { type: Boolean, required: true, default: false }
-}
+})
+
+//middle ware function that works between getting the data from html document and saving in the database
+notesSchema.pre("save", async function(next){
+    if(this.isModified("password")){
+        this.password = await bcrypt.hash(this.password,10);
+    }
+    next();
+})
 
 const User = mongoose.model("Users", notesSchema);
 
@@ -54,8 +63,9 @@ app.get("/signin", async (req, res) => {
         });
         console.log(user);
         console.log(user.password);
+        const isMatch = await bcrypt.compare(req.body.password,user.password);
         if (user) {
-            if (user.password == req.body.password) {
+            if (isMatch) {
                 //cookie creation
                 
                 res.redirect("/home");
@@ -104,6 +114,9 @@ app.get("//:id/verify/:token", async (req, res) => {
                 mnum: req.body.mnumber,
                 verified: true
             })
+
+
+
             await newNote.save();
             await token.deleteOne();
             res.redirect("/signin");
