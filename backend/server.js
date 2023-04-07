@@ -10,6 +10,10 @@ const Token = require("./models/token");
 const password = require("./password");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
+app.use(cookieParser());
 
 // database connection
 connection();
@@ -20,8 +24,23 @@ const notesSchema = new mongoose.Schema({
     lname: { type: String, required: true },
     password: { type: String, required: true },
     mnum: { type: String, required: true },
-    verified: { type: Boolean, required: true, default: false }
+    verified: { type: Boolean, required: true, default: false },
+    tokens:[{
+        token:{type: String}
+    }]
 })
+
+notesSchema.methods.generateAuthToken = async function(){
+    try {
+        const signintoken = jwt.sign({_id:this._id.toString()} , password.jwtprivatekey);
+        //console.log(this);
+        this.tokens = this.tokens.concat({token:signintoken});
+        await this.save();
+        return signintoken;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 //middle ware function that works between getting the data from html document and saving in the database
 notesSchema.pre("save", async function(next){
@@ -61,12 +80,19 @@ app.get("/signin", async (req, res) => {
         const user = await User.findOne({
             email: req.body.email
         });
-        console.log(user);
-        console.log(user.password);
+        //console.log(user);
+        //console.log(user.password);
         const isMatch = await bcrypt.compare(req.body.password,user.password);
         if (user) {
             if (isMatch) {
                 //cookie creation
+                const token = await user.generateAuthToken();
+
+                res.cookie("jwt", token , {
+                    expires:new Date(Date.now()+3600000),
+                    httpOnly:true
+                });
+                console.log(req.cookies.jwt);
                 
                 res.redirect("/home");
             }
@@ -80,13 +106,20 @@ app.get("/signin", async (req, res) => {
     })
 })
 
-app.get("/home", async (req, res) => {
+app.get("/home",async (req, res) => {
     console.log("in home ");
     //check cookie
     //if signin true  then displays data
     //else redirect signin
-    console.log(req);
+    try{
+    let token = req.cookies.jwt;
+    const verifyuser = jwt.verify(token,password.jwtprivatekey);
+    console.log(verifyuser);
     res.sendFile(path.join(__dirname, "../frontend/home.html"));
+    }
+    catch(error) {
+        res.redirect("/signin");
+    }
         
     
 })
