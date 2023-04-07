@@ -56,6 +56,8 @@ app.get("/signin", async (req, res) => {
         console.log(user.password);
         if (user) {
             if (user.password == req.body.password) {
+                //cookie creation
+                
                 res.redirect("/home");
             }
             else {
@@ -70,10 +72,13 @@ app.get("/signin", async (req, res) => {
 
 app.get("/home", async (req, res) => {
     console.log("in home ");
-    //local storage
-
-    
+    //check cookie
+    //if signin true  then displays data
+    //else redirect signin
+    console.log(req);
     res.sendFile(path.join(__dirname, "../frontend/home.html"));
+        
+    
 })
 
 app.get("//:id/verify/:token", async (req, res) => {
