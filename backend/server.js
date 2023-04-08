@@ -52,14 +52,52 @@ notesSchema.pre("save", async function(next){
 
 const User = mongoose.model("Users", notesSchema);
 
-app.get("/", function (req, res) {
-    console.log("in get");
-    res.sendFile(path.join(__dirname, "../frontend/signup.html"));
+
+
+
+// app.get("/", function (req, res) {
+//     console.log("in get");
+//     res.sendFile(path.join(__dirname, "../frontend/signup.html"));
+// })
+
+app.get("/",async (req, res) => {
+    console.log("in home ");
+    //check cookie
+    //if signin true  then displays data
+    //else redirect signin
+    try{
+    let token = req.cookies.jwt;
+    const verifyuser = jwt.verify(token,password.jwtprivatekey);
+    res.sendFile(path.join(__dirname, "../frontend/home.html"));
+
+    app.post("/",async (req,res) => {
+        //cookie delete
+        //redirect to signin page
+        token = req.cookies.jwt
+        console.log("in logout");
+        let activeuser = await User.findOne({_id:verifyuser._id.toString()});
+        activeuser.tokens = activeuser.tokens.filter((currElement) => {
+            console.log("in filter");
+            return currElement.token != token;
+        })
+
+        res.clearCookie("jwt");
+        await activeuser.save();
+
+        console.log("deletion complete");
+        res.redirect("/signin");
+    })
+    }
+    catch(error) {
+        res.redirect("/signin");
+    }
+        
 })
 
-//app.post
 
-app.post("/", async function (req, res) {
+
+app.post("/signup", async function (req, res) {
+    console.log("in signup post");
     let mail = req.body.email;
     let token = await new Token.Model({
         userId: mail,
@@ -69,7 +107,18 @@ app.post("/", async function (req, res) {
     const url = `${password.baseurl}/${mail}/verify/${token.token}`;
     console.log("in post ");
     await sendEmail(mail, "Verify Email", url);
-    // res.redirect("/");
+
+    // app.get("/loading" , ()=> {
+    //     res.send("Go to the verification link");
+    // })
+
+    // res.redirect("/loading");
+
+})
+
+app.get("/signup", function (req, res) {
+    console.log("in get");
+    res.sendFile(path.join(__dirname, "../frontend/signup.html"));
 })
 
 app.get("/signin", async (req, res) => {
@@ -77,7 +126,7 @@ app.get("/signin", async (req, res) => {
         let token = req.cookies.jwt;
         const verifyuser = jwt.verify(token,password.jwtprivatekey);
         console.log(verifyuser);
-        res.redirect("/home");
+        res.redirect("/");
         }
         catch(error) {
             res.sendFile(path.join(__dirname, "../frontend/signin.html"));
@@ -103,7 +152,7 @@ app.get("/signin", async (req, res) => {
                 });
                 console.log(req.cookies.jwt);
                 
-                res.redirect("/home");
+                res.redirect("/");
             }
             else {
                 res.send("Invalid password");
@@ -115,40 +164,6 @@ app.get("/signin", async (req, res) => {
     })
 })
 
-app.get("/home",async (req, res) => {
-    console.log("in home ");
-    //check cookie
-    //if signin true  then displays data
-    //else redirect signin
-    try{
-    let token = req.cookies.jwt;
-    const verifyuser = jwt.verify(token,password.jwtprivatekey);
-    res.sendFile(path.join(__dirname, "../frontend/home.html"));
-    
-    app.post("/home",async (req,res) => {
-        //cookie delete
-        //redirect to signin page
-        token = req.cookies.jwt
-        console.log("in logout");
-        let activeuser = await User.findOne({_id:verifyuser._id.toString()});
-        activeuser.tokens = activeuser.tokens.filter((currElement) => {
-            console.log("in filter");
-            return currElement.token != token;
-        })
-
-        res.clearCookie("jwt");
-        await activeuser.save();
-
-        console.log("deletion complete");
-        res.redirect("/signin");
-    })
-    }
-    catch(error) {
-        res.redirect("/signin");
-    }
-        
-    
-})
 
 app.get("//:id/verify/:token", async (req, res) => {
     console.log(req.url);
