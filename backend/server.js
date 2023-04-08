@@ -60,6 +60,19 @@ app.get("/",async (req, res) => {
 app.post("/signup", async function (req, res) {
     console.log("in signup post");
     let mail = req.body.email;
+    const user = await User.findOne({
+        email: req.body.email
+    });
+    if(user){
+        res.send("User already exist go to sign in");
+    }
+    const presenttoken = await Token.Model.findOne({
+        userId: req.body.email
+    });
+    if(presenttoken){
+        await presenttoken.deleteOne();
+    }
+    
     let token = await new Token.Model({
         userId: mail,
         token: crypto.randomBytes(32).toString("hex"),
@@ -68,7 +81,7 @@ app.post("/signup", async function (req, res) {
     const url = `${password.baseurl}/${mail}/verify/${token.token}`;
     console.log("in post ");
     await sendEmail(mail, "Verify Email", url);
-
+    
     // app.get("/loading" , ()=> {
     //     res.send("Go to the verification link");
     // })
@@ -101,8 +114,8 @@ app.get("/signin", async (req, res) => {
         });
         //console.log(user);
         //console.log(user.password);
-        const isMatch = await bcrypt.compare(req.body.password,user.password);
         if (user) {
+            const isMatch = await bcrypt.compare(req.body.password,user.password);
             if (isMatch) {
                 //cookie creation
                 const token = await user.generateAuthToken();
