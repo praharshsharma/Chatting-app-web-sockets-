@@ -12,53 +12,14 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const userModel = require("./models/user");
 
 app.use(cookieParser());
 
 // database connection
 connection();
 
-const notesSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    fname: { type: String, required: true },
-    lname: { type: String, required: true },
-    password: { type: String, required: true },
-    mnum: { type: String, required: true },
-    verified: { type: Boolean, required: true, default: false },
-    tokens:[{
-        token:{type: String}
-    }]
-})
-
-notesSchema.methods.generateAuthToken = async function(){
-    try {
-        const signintoken = jwt.sign({_id:this._id.toString()} , password.jwtprivatekey);
-        //console.log(this);
-        this.tokens = this.tokens.concat({token:signintoken});
-        await this.save();
-        return signintoken;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//middle ware function that works between getting the data from html document and saving in the database
-notesSchema.pre("save", async function(next){
-    if(this.isModified("password")){
-        this.password = await bcrypt.hash(this.password,10);
-    }
-    next();
-})
-
-const User = mongoose.model("Users", notesSchema);
-
-
-
-
-// app.get("/", function (req, res) {
-//     console.log("in get");
-//     res.sendFile(path.join(__dirname, "../frontend/signup.html"));
-// })
+const User = userModel.User;
 
 app.get("/",async (req, res) => {
     console.log("in home ");
@@ -180,7 +141,7 @@ app.get("//:id/verify/:token", async (req, res) => {
         res.sendFile(path.join(__dirname, "../frontend/info.html"));
         app.post("//:id/verify/:token", async (req, res) => {
             console.log("in verify post");
-            let newNote = new User({
+            let newUser = new User({
                 email: req.params.id,
                 fname: req.body.fname,
                 lname: req.body.lname,
@@ -191,7 +152,7 @@ app.get("//:id/verify/:token", async (req, res) => {
 
 
 
-            await newNote.save();
+            await newUser.save();
             await token.deleteOne();
             res.redirect("/signin");
         })

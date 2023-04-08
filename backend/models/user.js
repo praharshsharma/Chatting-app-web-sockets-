@@ -1,56 +1,44 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Joi = require("joi");
-const connection = require("../db");
-// const passwordComplexity = require("joi-password-complexity");
-connection();
+const password = require("../password");
 
-const userSchema = new mongoose.Schema({
-	// firstName: { type: String, required: true },
-	// lastName: { type: String, required: true },
-	email: { type: String, required: true },
-	// password: { type: String, required: true },
-	verified: {type:bool,default:false}
-});
+const Schema = mongoose.Schema;
 
-userSchema.methods.generateAuthToken = function () {
-	const token = jwt.sign({ _id: this._id }, process.env.JWTPRIVATEKEY, {
-		expiresIn: "7d",
-	});
-	return token;
-};
+const userSchema = new Schema({
+    email: { type: String, required: true, unique: true },
+    fname: { type: String, required: true },
+    lname: { type: String, required: true },
+    password: { type: String, required: true },
+    mnum: { type: String, required: true },
+    verified: { type: Boolean, required: true, default: false },
+    tokens:[{
+        token:{type: String}
+    }]
+})
 
-const User = mongoose.model("user", userSchema);
+userSchema.methods.generateAuthToken = async function(){
+    try {
+        const signintoken = jwt.sign({_id:this._id.toString()} , password.jwtprivatekey);
+        //console.log(this);
+        this.tokens = this.tokens.concat({token:signintoken});
+        await this.save();
+        return signintoken;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-const validate = (data) => {
-	const schema = Joi.object({
-		firstName: Joi.string().required().label("First Name"),
-		lastName: Joi.string().required().label("Last Name"),
-		email: Joi.string().email().required().label("Email"),
-		password: passwordComplexity().required().label("Password"),
-	});
-	return schema.validate(data);
-};
+//middle ware function that works between getting the data from html document and saving in the database
+userSchema.pre("save", async function(next){
+    if(this.isModified("password")){
+        this.password = await bcrypt.hash(this.password,10);
+    }
+    next();
+})
 
+const User = mongoose.model("Users", userSchema);
 
+User.createCollection();
 
-module.exports = { User, validate };
-
-//module.exports = { User };
-
-// const createdocument = async ()=> {
-// 	   try{
-// 	        const data = new User({
-// 	            email:mail,
-// 	            verified:false
-// 	        })
-	
-// 	        const result = await data.save();
-// 	        console.log(result);
-// 	   }
-// 	   catch(err){
-// 	    console.log(err);
-// 	   }
-// 	}
-	
-// createdocument();
+module.exports = { User };
