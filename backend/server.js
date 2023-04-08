@@ -73,7 +73,16 @@ app.post("/", async function (req, res) {
 })
 
 app.get("/signin", async (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/signin.html"));
+    try{
+        let token = req.cookies.jwt;
+        const verifyuser = jwt.verify(token,password.jwtprivatekey);
+        console.log(verifyuser);
+        res.redirect("/home");
+        }
+        catch(error) {
+            res.sendFile(path.join(__dirname, "../frontend/signin.html"));
+        }
+    
 
     app.post("/signin", async (req, res) => {
         console.log("in sign in ");
@@ -114,8 +123,25 @@ app.get("/home",async (req, res) => {
     try{
     let token = req.cookies.jwt;
     const verifyuser = jwt.verify(token,password.jwtprivatekey);
-    console.log(verifyuser);
     res.sendFile(path.join(__dirname, "../frontend/home.html"));
+    
+    app.post("/home",async (req,res) => {
+        //cookie delete
+        //redirect to signin page
+        token = req.cookies.jwt
+        console.log("in logout");
+        let activeuser = await User.findOne({_id:verifyuser._id.toString()});
+        activeuser.tokens = activeuser.tokens.filter((currElement) => {
+            console.log("in filter");
+            return currElement.token != token;
+        })
+
+        res.clearCookie("jwt");
+        await activeuser.save();
+
+        console.log("deletion complete");
+        res.redirect("/signin");
+    })
     }
     catch(error) {
         res.redirect("/signin");
