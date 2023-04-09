@@ -13,8 +13,12 @@ const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const userModel = require("./models/user");
+const staticPath = path.join(__dirname , "../frontend");
+//console.group(__dirname)
+//console.log(staticPath);
 
 app.use(cookieParser());
+app.use(express.static(staticPath));
 
 // database connection
 connection();
@@ -55,7 +59,8 @@ app.get("/",async (req, res) => {
         
 })
 
-
+let str = "<a href='./signin'>Signin</a>"
+let str1 = "<a href='./signup'>Signup</a>"
 
 app.post("/signup", async function (req, res) {
     console.log("in signup post");
@@ -64,7 +69,8 @@ app.post("/signup", async function (req, res) {
         email: req.body.email
     });
     if(user){
-        res.send("User already exist go to sign in");
+        res.send(`User already exist go to ${str}`);
+        return;
     }
     const presenttoken = await Token.Model.findOne({
         userId: req.body.email
@@ -133,7 +139,7 @@ app.get("/signin", async (req, res) => {
             }
         }
         else {
-            res.send("Invalid user");
+            res.send(`Invalid user ${str1} here`);
         }
     })
 })
