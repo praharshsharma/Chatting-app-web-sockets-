@@ -33,7 +33,12 @@ app.get("/",async (req, res) => {
     try{
     let token = req.cookies.jwt;
     const verifyuser = jwt.verify(token,password.jwtprivatekey);
-    res.sendFile(path.join(__dirname, "../frontend/home.html"));
+    const usr = await User.findOne({
+        _id: verifyuser._id
+    });
+    console.log(usr.fname);
+    const fname = usr.fname;
+    res.render(path.join(__dirname, "../frontend/home.ejs"), {fname});
 
     app.post("/",async (req,res) => {
         //cookie delete
