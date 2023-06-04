@@ -14,8 +14,6 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const userModel = require("./models/user");
 const staticPath = path.join(__dirname , "../frontend");
-//console.group(__dirname)
-//console.log(staticPath);
 
 app.use(cookieParser());
 app.use(express.static(staticPath));
