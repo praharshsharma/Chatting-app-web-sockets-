@@ -16,10 +16,11 @@ const userModel = require("./models/user");
 const socketModel = require("./models/socketId");
 const { func } = require("joi");
 const { exit } = require("process");
-const staticPath = path.join(__dirname , "../frontend");
-const io = require('socket.io')(5001 , {
-    cors:{
-        origin:['http://localhost:3000'],
+const { log } = require("console");
+const staticPath = path.join(__dirname, "../frontend");
+const io = require('socket.io')(5001, {
+    cors: {
+        origin: ['http://localhost:3000'],
     },
 })
 app.set('view engine', 'ejs')
@@ -33,92 +34,111 @@ connection();
 const User = userModel.User;
 const Socket = socketModel.socketmodel;
 
-app.get("/",async (req, res) => {
+app.get("/", async (req, res) => {
     console.log("in home");
     //check cookie
     //if signin true  then displays data
     //else redirect signin
-    try{
-    let token = req.cookies.jwt;
-    const verifyuser = jwt.verify(token,password.jwtprivatekey);
-    const usr = await User.findOne({
-        _id: verifyuser._id
-    });  
-    let idsocket = null;
-    io.on('connection', socket => {
-        io.removeAllListeners();
-        idsocket = socket.id;
-        socket.on('home-page-visited' , async () => {
+    try {
+        let token = req.cookies.jwt;
+        const verifyuser = jwt.verify(token, password.jwtprivatekey);
+        const usr = await User.findOne({
+            _id: verifyuser._id
+        });
+        let idsocket = null;
+        io.on('connection', socket => {
+            io.removeAllListeners();
+            idsocket = socket.id;
+            socket.on('home-page-visited', async () => {
+                const user = await Socket.findOne({
+                    userId: usr.email
+                });
+                var time = new Date();
+                
+
+                if (user) {
+                    let temp = user.socketid;
+                    temp = temp.filter((currElement) => {
+                        let diff = new Date() - currElement.time;
+                        if(diff<86400000){
+                            return currElement;
+                        }
+                    })
+                    const id = socket.id;
+                    temp.push({id,time})
+                    user.socketid = temp;
+                    user.save();
+                }
+                else {
+                    async function func() {
+                        const temp = [];
+                        const id = socket.id;
+                        temp.push({id,time})
+                        let newUser = new Socket({
+                            userId: usr.email,
+                            socketid: temp,
+                        })
+                        await newUser.save();
+                    }
+
+                    func();
+
+                }
+                return;
+            })
+        })
+
+        res.render(path.join(__dirname, "../frontend/home.ejs"), { usr });
+
+        app.post("/", async (req, res) => {
+            //cookie delete
+            //redirect to signin page
+            token = req.cookies.jwt
+            console.log("in logout");
+            let activeuser = await User.findOne({ _id: verifyuser._id.toString() });
+            activeuser.tokens = activeuser.tokens.filter((currElement) => {
+                //console.log("in filter");
+                return currElement.token != token;
+            })
+
+            res.clearCookie("jwt");
+            await activeuser.save();
+
             const user = await Socket.findOne({
                 userId: usr.email
             });
-            if(user)
-            {
-                    let temp = user.socketid;
-                    temp.push(socket.id);
-                    user.socketid = temp;
-                    user.save();
-            }
-            else
-            {
-                async function func ()
-                {
-                    const temp = [];
-                    temp.push(socket.id)
-                    let newUser = new Socket({
-                        userId: usr.email,
-                        socketid:temp,
-                    })
-                    await newUser.save();
-                }  
+            console.log(idsocket);
+            user.socketid = user.socketid.filter((currElement) => {
+                console.log(currElement);
+                return currElement.id != idsocket;
+            })
 
-                func();
+            await user.save();
 
-            }
-
-            return;
+            console.log("deletion complete");
+            res.redirect("/signin");
         })
-    })
-
-    res.render(path.join(__dirname, "../frontend/home.ejs"), {usr});
-
-    app.post("/",async (req,res) => {
-        //cookie delete
-        //redirect to signin page
-        token = req.cookies.jwt
-        console.log("in logout");
-        let activeuser = await User.findOne({_id:verifyuser._id.toString()});
-        activeuser.tokens = activeuser.tokens.filter((currElement) => {
-            //console.log("in filter");
-            return currElement.token != token;
-        })
-
-        res.clearCookie("jwt");
-        await activeuser.save();
-
-        const user = await Socket.findOne({
-            userId: usr.email
-        });
-        console.log(idsocket);
-        user.socketid = user.socketid.filter((currElement)=> {
-            console.log(currElement);
-            return currElement != idsocket;
-        })
-
-        await user.save();
-
-        console.log("deletion complete");
-        res.redirect("/signin");
-    })
     }
-    catch(error) {
+    catch (error) {
         res.redirect("/signin");
     }
-        
+
 })
 
 let str = "<a href='./signin'>Signin</a>"
 let str1 = "<a href='./signup'>Signup</a>"
+
+app.post("/search", async function(req,res){
+    let mail = req.body.ns;
+    const user = await User.findOne({
+        email: req.body.ns
+    });
+
+    console.log(user.fname);
+    // res.render(path.join(__dirname, "../frontend/home.ejs"), { usr },{user});
+    
+
+})
 
 app.post("/signup", async function (req, res) {
     console.log("in signup post");
@@ -126,17 +146,17 @@ app.post("/signup", async function (req, res) {
     const user = await User.findOne({
         email: req.body.email
     });
-    if(user){
+    if (user) {
         res.send(`User already exist go to ${str}`);
         return;
     }
     const presenttoken = await Token.Model.findOne({
         userId: req.body.email
     });
-    if(presenttoken){
+    if (presenttoken) {
         await presenttoken.deleteOne();
     }
-    
+
     let token = await new Token.Model({
         userId: mail,
         token: crypto.randomBytes(32).toString("hex"),
@@ -145,7 +165,7 @@ app.post("/signup", async function (req, res) {
     const url = `${password.baseurl}/${mail}/verify/${token.token}`;
     console.log("in post ");
     await sendEmail(mail, "Verify Email", url);
-    
+
     // app.get("/loading" , ()=> {
     //     res.send("Go to the verification link");
     // })
@@ -160,16 +180,16 @@ app.get("/signup", function (req, res) {
 })
 
 app.get("/signin", async (req, res) => {
-    try{
+    try {
         let token = req.cookies.jwt;
-        const verifyuser = jwt.verify(token,password.jwtprivatekey);
+        const verifyuser = jwt.verify(token, password.jwtprivatekey);
         console.log(verifyuser);
         res.redirect("/");
-        }
-        catch(error) {
-            res.sendFile(path.join(__dirname, "../frontend/signin.html"));
-        }
-    
+    }
+    catch (error) {
+        res.sendFile(path.join(__dirname, "../frontend/signin.html"));
+    }
+
 
     app.post("/signin", async (req, res) => {
         console.log("in sign in ");
@@ -179,17 +199,17 @@ app.get("/signin", async (req, res) => {
         //console.log(user);
         //console.log(user.password);
         if (user) {
-            const isMatch = await bcrypt.compare(req.body.password,user.password);
+            const isMatch = await bcrypt.compare(req.body.password, user.password);
             if (isMatch) {
                 //cookie creation
                 const token = await user.generateAuthToken();
 
-                res.cookie("jwt", token , {
-                    expires:new Date(Date.now()+3600000),
-                    httpOnly:true
+                res.cookie("jwt", token, {
+                    expires: new Date(Date.now() + 3600000),
+                    httpOnly: true
                 });
                 console.log(req.cookies.jwt);
-                
+
                 res.redirect("/");
             }
             else {
@@ -226,9 +246,6 @@ app.get("//:id/verify/:token", async (req, res) => {
                 mnum: req.body.mnumber,
                 verified: true
             })
-
-
-
             await newUser.save();
             await token.deleteOne();
             res.redirect("/signin");

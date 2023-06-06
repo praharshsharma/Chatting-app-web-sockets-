@@ -8,7 +8,8 @@ const socketSchema = new Schema({
 		unique: true,
 	},
 	socketid: [{
-        type: String,
+        id:{type: String},
+		time:{type:Date},
     }]
 
 })
