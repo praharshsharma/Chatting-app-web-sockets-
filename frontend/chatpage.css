@@ -1,0 +1,43 @@
+div.right {
+    border-style: solid;
+    width: 79%;
+    height: 100%;
+    float: right;
+}
+
+div.left {
+    border-style: solid;
+    width: 20%;
+    height: 100%;
+    float: left;
+}
+
+.m{
+    width: 20%;
+    padding: 10px;
+    margin: 17px 12px;
+    border: 2px solid;
+    border-radius: 10px;
+
+}
+.usn{
+    width: 80%;
+    padding: 10px;
+    margin: 17px 12px;
+    border: 2px solid;
+    border-radius: 10px;
+}
+
+.l {
+    float: left;
+    clear: both;
+}
+
+.r {
+    float: right;
+    clear: both;
+}
+
+.sear,.cmsg{
+    padding:10px;
+}
