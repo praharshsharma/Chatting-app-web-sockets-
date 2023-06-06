@@ -22,7 +22,6 @@ const io = require('socket.io')(5001 , {
         origin:['http://localhost:3000'],
     },
 })
-//console.log(io);
 app.set('view engine', 'ejs')
 app.use(cookieParser());
 app.use(express.static(staticPath));
@@ -45,9 +44,10 @@ app.get("/",async (req, res) => {
     const usr = await User.findOne({
         _id: verifyuser._id
     });  
-
+    let idsocket = null;
     io.on('connection', socket => {
         io.removeAllListeners();
+        idsocket = socket.id;
         socket.on('home-page-visited' , async () => {
             const user = await Socket.findOne({
                 userId: usr.email
@@ -89,12 +89,23 @@ app.get("/",async (req, res) => {
         console.log("in logout");
         let activeuser = await User.findOne({_id:verifyuser._id.toString()});
         activeuser.tokens = activeuser.tokens.filter((currElement) => {
-            console.log("in filter");
+            //console.log("in filter");
             return currElement.token != token;
         })
 
         res.clearCookie("jwt");
         await activeuser.save();
+
+        const user = await Socket.findOne({
+            userId: usr.email
+        });
+        console.log(idsocket);
+        user.socketid = user.socketid.filter((currElement)=> {
+            console.log(currElement);
+            return currElement != idsocket;
+        })
+
+        await user.save();
 
         console.log("deletion complete");
         res.redirect("/signin");
