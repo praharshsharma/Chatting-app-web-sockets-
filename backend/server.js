@@ -38,7 +38,7 @@ app.get("/",async (req, res) => {
     });
     console.log(usr.fname);
     const fname = usr.fname;
-    res.render(path.join(__dirname, "../frontend/home.ejs"), {fname});
+    res.render(path.join(__dirname, "../frontend/home.ejs"), {usr});
 
     app.post("/",async (req,res) => {
         //cookie delete
