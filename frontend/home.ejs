@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script defer src="http://localhost:5001/socket.io/socket.io.js"></script>
     <script defer src="home.js"></script>
     <link rel="stylesheet" href="chatpage.css">
@@ -14,18 +15,17 @@
 <body>
     <h1>HOME</h1><br>
     <form action="" method="post">
-        <p>Welcome <%=usr.fname%>
+        <p>Welcome <span class="fname"><%=usr.fname%></span>
         </p>
         <button>Logout</button>
     </form>
     <div class="left">
-        <form action="/search" method="post" class="sear">
+       
             <label>Search-</label>
             <input type="text" id="ns" name="ns"><br><br>
-            <input type="submit" value="Submit">
-        </form>
+            <input type="submit" value="Submit" onclick="search()">
 
-        <div class="usn">
+        <!-- <div class="usn">
             Sneha
         </div>
 
@@ -34,7 +34,7 @@
         </div>
         <div class="usn">
             csjbc
-        </div>
+        </div> -->
 
     </div>
 

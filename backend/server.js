@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const connection = require("./db");
 const path = require('path');
@@ -14,9 +13,6 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const userModel = require("./models/user");
 const socketModel = require("./models/socketId");
-const { func } = require("joi");
-const { exit } = require("process");
-const { log } = require("console");
 const staticPath = path.join(__dirname, "../frontend");
 const io = require('socket.io')(5001, {
     cors: {
@@ -26,8 +22,7 @@ const io = require('socket.io')(5001, {
 app.set('view engine', 'ejs')
 app.use(cookieParser());
 app.use(express.static(staticPath));
-app.use(express.urlencoded({ extended: true }))
-
+var jsonParser = bodyparser.json()
 // database connection
 connection();
 
@@ -39,10 +34,11 @@ app.get("/", async (req, res) => {
     //check cookie
     //if signin true  then displays data
     //else redirect signin
+    var usr = null;
     try {
         let token = req.cookies.jwt;
         const verifyuser = jwt.verify(token, password.jwtprivatekey);
-        const usr = await User.findOne({
+        usr = await User.findOne({
             _id: verifyuser._id
         });
         let idsocket = null;
@@ -90,7 +86,7 @@ app.get("/", async (req, res) => {
 
         res.render(path.join(__dirname, "../frontend/home.ejs"), { usr });
 
-        app.post("/", async (req, res) => {
+        app.post("", async (req, res) => {
             //cookie delete
             //redirect to signin page
             token = req.cookies.jwt
@@ -123,22 +119,34 @@ app.get("/", async (req, res) => {
         res.redirect("/signin");
     }
 
+    app.post("/search", (req,res)=>{
+        console.log("in search")
+        let mail = req.body;
+        console.log(mail);
+        const user =  Socket.findOne({
+            userId: mail
+        });
+        //console.log(user);
+        if(user)
+        {
+            const dbuser =  User.findOne({
+                _id: user.userId
+            });
+            //console.log(dbuser.fname);
+            res.send(dbuser.fname);
+        }
+        else
+        {
+            res.render(path.join(__dirname, "../frontend/home.ejs"), { usr });
+        }
+    })
+
 })
 
 let str = "<a href='./signin'>Signin</a>"
 let str1 = "<a href='./signup'>Signup</a>"
 
-app.post("/search", async function(req,res){
-    let mail = req.body.ns;
-    const user = await User.findOne({
-        email: req.body.ns
-    });
 
-    console.log(user.fname);
-    // res.render(path.join(__dirname, "../frontend/home.ejs"), { usr },{user});
-    
-
-})
 
 app.post("/signup", async function (req, res) {
     console.log("in signup post");
