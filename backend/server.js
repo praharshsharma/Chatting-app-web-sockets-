@@ -121,7 +121,7 @@ app.get("/", async (req, res) => {
 
     app.post("/search", (req,res)=>{
         console.log("in search")
-        let mail = req.body;
+        let mail = req.body.payload;
         console.log(mail);
         const user =  Socket.findOne({
             userId: mail
