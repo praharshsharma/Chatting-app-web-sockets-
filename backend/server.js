@@ -22,7 +22,7 @@ const io = require('socket.io')(5001, {
 app.set('view engine', 'ejs')
 app.use(cookieParser());
 app.use(express.static(staticPath));
-var jsonParser = bodyparser.json()
+app.use(bodyparser.json());
 // database connection
 connection();
 
@@ -50,18 +50,18 @@ app.get("/", async (req, res) => {
                     userId: usr.email
                 });
                 var time = new Date();
-                
+
 
                 if (user) {
                     let temp = user.socketid;
                     temp = temp.filter((currElement) => {
                         let diff = new Date() - currElement.time;
-                        if(diff<86400000){
+                        if (diff < 86400000) {
                             return currElement;
                         }
                     })
                     const id = socket.id;
-                    temp.push({id,time})
+                    temp.push({ id, time })
                     user.socketid = temp;
                     user.save();
                 }
@@ -69,7 +69,7 @@ app.get("/", async (req, res) => {
                     async function func() {
                         const temp = [];
                         const id = socket.id;
-                        temp.push({id,time})
+                        temp.push({ id, time })
                         let newUser = new Socket({
                             userId: usr.email,
                             socketid: temp,
@@ -119,27 +119,33 @@ app.get("/", async (req, res) => {
         res.redirect("/signin");
     }
 
-    app.post("/search", (req,res)=>{
-        console.log("in search")
-        let mail = req.body;
+    app.post('/endpoint', async (req, res) => {
+        // Access the data from the request body
+        const mail = req.body.name;
         console.log(mail);
-        const user =  Socket.findOne({
+        // Perform any necessary operations with the data
+        // ...
+
+        // Send a response back
+        const user = await Socket.findOne({
             userId: mail
         });
-        //console.log(user);
-        if(user)
-        {
-            const dbuser =  User.findOne({
-                _id: user.userId
+        // console.log(user);
+        if (user) {
+            const dbuser = await User.findOne({
+                email: user.userId
             });
-            //console.log(dbuser.fname);
-            res.send(dbuser.fname);
+            // console.log(dbuser);
+            console.log("in server.js search")
+            console.log(dbuser.fname);
+            // res.send(dbuser.fname);
+            res.json({ receivername: dbuser.fname });
         }
-        else
-        {
-            res.render(path.join(__dirname, "../frontend/home.ejs"), { usr });
+        else {
+            res.json({ message: "User not found" });
+            // res.render(path.join(__dirname, "../frontend/home.ejs"), { usr });
         }
-    })
+    });
 
 })
 
