@@ -4,45 +4,48 @@ socket.emit('home-page-visited');
 
 const left = document.querySelector(".left");
 
-// form.addEventListener('submit' , (e)=>{
-//     e.preventDefault();
+// form.addEventListener('submit', (e) => {
+//   e.preventDefault();
 // })
 
-// form.addEventListener('submit' , ()=> {
-//     const name = document.createElement('div');
-//     name.innerText = document.getElementById("ns").value;
-//     name.classList.add('usn');
-//     left.append(name);
+// form.addEventListener('submit', () => {
+//   const name = document.createElement('div');
+//   name.innerText = document.getElementById("ns").value;
+//   name.classList.add('usn');
+//   left.append(name);
 
 // })
 
-function search(){
-    console.log("in search");
-    const data = document.getElementById("ns").value;
-    console.log(data);
-    if(data!="")
-    {
-       fetch('search' , {
-        method: 'POST',
-        headers: {'Content-Type': 'appliction/json ; charset=UTF-8'},
-        body: JSON.stringify({payload:data}),
-       })
-    }
+
+
+function search() {
+  const mail = document.getElementById("ns").value;
+  const data = { name: mail };
+
+  fetch('/endpoint', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+    .then(response => response.json())
+    .then(result => {
+      // Handle the response
+      if (result.message) {
+        document.getElementById("dec").innerHTML = result.message;
+      }
+      else {
+        document.getElementById("toname").innerHTML = result.receivername;
+        const name = document.createElement('div');
+        name.innerText =result.receivername;
+        name.classList.add('usn');
+        left.append(name);
+      }
+
+
+      console.log(result);
+    })
+
 }
 
-
-
-
-
-
-// $.ajax({
-//     url:"/search",
-//     method:"POST",
-//     body :  JSON.stringify({data:data}),
-//     success : function(result){
-//         const name = document.createElement('div');
-//         name.innerText = result;
-//         name.classList.add('usn');
-//         left.append(name);
-//     }
-// })
