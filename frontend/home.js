@@ -1,51 +1,237 @@
-const socket = io('http://localhost:5001')
+const socket = io("http://localhost:5001");
 
-socket.emit('home-page-visited');
+socket.emit("home-page-visited");
 
 const left = document.querySelector(".left");
+var allmsgs = document.getElementById("all-msgs");
 
-// form.addEventListener('submit', (e) => {
-//   e.preventDefault();
-// })
+var message = document.querySelectorAll(".textbox");
+var button = document.querySelectorAll(".msgsend");
 
-// form.addEventListener('submit', () => {
-//   const name = document.createElement('div');
-//   name.innerText = document.getElementById("ns").value;
-//   name.classList.add('usn');
-//   left.append(name);
+// yaha dikkat hai
+button.forEach((currElement)=> {
+  var nameofcurr = currElement.name;
+  currElement.addEventListener('click' , ()=>{
+    var currmsg = null;
+    for(var i=0;i<message.length;i++)
+    {
+      if(message[i].name == nameofcurr)
+      {
+        currmsg = message[i].value;
+        message[i].value = null;
+        break;
+      }
+    }
+    //displaying message
+    const msg = document.createElement("div");
+    msg.classList.add("m");
+    msg.classList.add("r");
+    msg.innerText = currmsg;
+    var msgbox = document.getElementById(nameofcurr);
+    msgbox.querySelector(".chats").append(msg);
 
-// })
+
+    socket.emit('send-message' , currmsg , nameofcurr);
+  })
+})
 
 
+
+socket.on("receive-message", (message, mailid , sendername) => {
+  var container = document.getElementById(mailid);
+  if (container) {
+    const msg = document.createElement("div");
+    msg.classList.add("m");
+    msg.classList.add("l");
+    msg.innerText = message;
+    container.querySelector(".chats").append(msg);
+  } else {
+    //making right side
+    const msgbox = document.createElement("div");
+
+    var toname = document.createElement("div");
+    toname.classList.add("toname");
+    msgbox.append(toname);
+
+    var chats = document.createElement("div");
+    chats.classList.add("chats");
+    msgbox.append(chats);
+
+    var inputdiv = document.createElement("div");
+    inputdiv.classList.add("msg-input-div");
+    //var form = document.createElement("form");
+    //form.classList.add("csmg");
+    const label = document.createElement("label");
+    label.innerText = "Type a message-";
+    //form.append(label);
+    var input1 = document.createElement("input");
+    var input2 = document.createElement("input");
+    input1.setAttribute("type", "text");
+    input2.setAttribute("type", "submit");
+    input1.setAttribute("class", "textbox");
+    input2.setAttribute("class", "msgsend");
+    input1.setAttribute("name", mailid);
+    input2.setAttribute("name", mailid);
+    input2.setAttribute("value", "send");
+    //form.append(input1);
+    //form.append(input2);
+    //inputdiv.append(form);
+    inputdiv.append(label);
+    inputdiv.append(input1);
+    inputdiv.append(input2);
+    msgbox.append(inputdiv);
+
+    msgbox.classList.add("right");
+    msgbox.setAttribute("id", mailid);
+
+    allmsgs.append(msgbox);
+
+    //making left side
+    var name = document.createElement("div");
+    name.innerText = sendername;
+    name.classList.add("usn");
+    left.append(name);
+
+    //displaying message
+    const msg = document.createElement("div");
+    msg.classList.add("m");
+    msg.classList.add("l");
+    msg.innerText = message;
+    msgbox.querySelector(".chats").append(msg);
+
+    button = document.querySelectorAll(".msgsend");
+    message = document.querySelectorAll(".textbox");
+
+    //testing
+    button.forEach((currElement)=> {
+      var nameofcurr = currElement.name;
+      console.log("inside for each");
+      currElement.addEventListener('click' , ()=>{
+        console.log("in button")
+        var currmsg = null;
+        for(var i=0;i<message.length;i++)
+        {
+          if(message[i].name == nameofcurr)
+          {
+            currmsg = message[i].value;
+            break;
+          }
+        }
+        //displaying message
+        const msg = document.createElement("div");
+        msg.classList.add("m");
+        msg.classList.add("r");
+        msg.innerText = currmsg;
+        var msgbox = document.getElementById(nameofcurr);
+        msgbox.querySelector(".chats").append(msg);
+    
+    
+        socket.emit('send-message' , currmsg , nameofcurr);
+      })
+    })
+  }
+});
 
 function search() {
   const mail = document.getElementById("ns").value;
   const data = { name: mail };
 
-  fetch('/endpoint', {
-    method: 'POST',
+  fetch("/endpoint", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
-    .then(response => response.json())
-    .then(result => {
+    .then((response) => response.json())
+    .then((result) => {
       // Handle the response
       if (result.message) {
         document.getElementById("dec").innerHTML = result.message;
-      }
-      else {
-        document.getElementById("toname").innerHTML = result.receivername;
-        const name = document.createElement('div');
-        name.innerText =result.receivername;
-        name.classList.add('usn');
-        left.append(name);
-      }
+      } else {
+        //document.getElementById("toname").innerHTML = result.receivername;
+        var container = document.getElementById(mail);
+        if (container) {
 
+        } else {
+          const msgbox = document.createElement("div");
+
+          var toname = document.createElement("div");
+          toname.classList.add("chats");
+          msgbox.append(toname);
+
+          var chats = document.createElement("div");
+          chats.classList.add("chats");
+          msgbox.append(chats);
+
+          var inputdiv = document.createElement("div");
+          inputdiv.classList.add("msg-input-div");
+          //var form = document.createElement("form");
+          //form.classList.add("csmg");
+          const label = document.createElement("label");
+          label.innerText = "Type a message-";
+          //form.append(label);
+          var input1 = document.createElement("input");
+          var input2 = document.createElement("input");
+          input1.setAttribute("type", "text");
+          input2.setAttribute("type", "submit");
+          input1.setAttribute("class", "textbox");
+          input2.setAttribute("class", "msgsend");
+          input1.setAttribute("name", mail);
+          input2.setAttribute("name", mail);
+          input2.setAttribute("value", "send");
+          //form.append(input1);
+          //form.append(input2);
+          //inputdiv.append(form);
+          inputdiv.append(label);
+          inputdiv.append(input1);
+          inputdiv.append(input2);
+          msgbox.append(inputdiv);
+
+          msgbox.classList.add("right");
+          msgbox.setAttribute("id", mail);
+
+          allmsgs.append(msgbox);
+
+          //making left side
+          const name = document.createElement("div");
+          name.innerText = result.receivername;
+          name.classList.add("usn");
+          left.append(name);   
+
+          button = document.querySelectorAll(".msgsend");
+          message = document.querySelectorAll(".textbox");
+
+          //testing
+          button.forEach((currElement)=> {
+            var nameofcurr = currElement.name;
+            console.log("inside for each");
+            currElement.addEventListener('click' , ()=>{
+              console.log("in button")
+              var currmsg = null;
+              for(var i=0;i<message.length;i++)
+              {
+                if(message[i].name == nameofcurr)
+                {
+                  currmsg = message[i].value;
+                  break;
+                }
+              }
+              //displaying message
+              const msg = document.createElement("div");
+              msg.classList.add("m");
+              msg.classList.add("r");
+              msg.innerText = currmsg;
+              var msgbox = document.getElementById(nameofcurr);
+              msgbox.querySelector(".chats").append(msg);
+          
+          
+              socket.emit('send-message' , currmsg , nameofcurr);
+            })
+          })
+        }
+      }
 
       console.log(result);
-    })
-
+    });
 }
-
