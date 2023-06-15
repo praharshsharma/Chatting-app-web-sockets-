@@ -7,37 +7,10 @@ var allmsgs = document.getElementById("all-msgs");
 
 var message = document.querySelectorAll(".textbox");
 var button = document.querySelectorAll(".msgsend");
+var usn = document.querySelectorAll(".usn");
+var right = document.querySelectorAll(".right");
 
-// yaha dikkat hai
-button.forEach((currElement)=> {
-  var nameofcurr = currElement.name;
-  currElement.addEventListener('click' , ()=>{
-    var currmsg = null;
-    for(var i=0;i<message.length;i++)
-    {
-      if(message[i].name == nameofcurr)
-      {
-        currmsg = message[i].value;
-        message[i].value = null;
-        break;
-      }
-    }
-    //displaying message
-    const msg = document.createElement("div");
-    msg.classList.add("m");
-    msg.classList.add("r");
-    msg.innerText = currmsg;
-    var msgbox = document.getElementById(nameofcurr);
-    msgbox.querySelector(".chats").append(msg);
-
-
-    socket.emit('send-message' , currmsg , nameofcurr);
-  })
-})
-
-
-
-socket.on("receive-message", (message, mailid , sendername) => {
+socket.on("receive-message", (message, mailid, sendername) => {
   var container = document.getElementById(mailid);
   if (container) {
     const msg = document.createElement("div");
@@ -51,6 +24,7 @@ socket.on("receive-message", (message, mailid , sendername) => {
 
     var toname = document.createElement("div");
     toname.classList.add("toname");
+    toname.innerText = sendername;
     msgbox.append(toname);
 
     var chats = document.createElement("div");
@@ -87,10 +61,11 @@ socket.on("receive-message", (message, mailid , sendername) => {
     allmsgs.append(msgbox);
 
     //making left side
-    var name = document.createElement("div");
-    name.innerText = sendername;
-    name.classList.add("usn");
-    left.append(name);
+    var uname = document.createElement("div");
+    uname.innerText = sendername;
+    uname.classList.add("usn");
+    uname.classList.add(mailid);
+    left.append(uname);
 
     //displaying message
     const msg = document.createElement("div");
@@ -103,17 +78,16 @@ socket.on("receive-message", (message, mailid , sendername) => {
     message = document.querySelectorAll(".textbox");
 
     //testing
-    button.forEach((currElement)=> {
+    button.forEach((currElement) => {
       var nameofcurr = currElement.name;
       console.log("inside for each");
-      currElement.addEventListener('click' , ()=>{
-        console.log("in button")
+      currElement.addEventListener("click", () => {
+        console.log("in button");
         var currmsg = null;
-        for(var i=0;i<message.length;i++)
-        {
-          if(message[i].name == nameofcurr)
-          {
+        for (var i = 0; i < message.length; i++) {
+          if (message[i].name == nameofcurr) {
             currmsg = message[i].value;
+            message[i].value = "";
             break;
           }
         }
@@ -124,11 +98,26 @@ socket.on("receive-message", (message, mailid , sendername) => {
         msg.innerText = currmsg;
         var msgbox = document.getElementById(nameofcurr);
         msgbox.querySelector(".chats").append(msg);
-    
-    
-        socket.emit('send-message' , currmsg , nameofcurr);
+
+        socket.emit("send-message", currmsg, nameofcurr);
+      });
+    });
+
+    usn = document.querySelectorAll(".usn");
+    right = document.querySelectorAll(".right");
+
+    usn.forEach((currElement) => {
+      currElement.addEventListener('click' , ()=>{
+        var idforsearch = currElement.classList[1];
+        right.forEach((curr) => {
+        if (curr.id == idforsearch) {
+          curr.classList.remove("hide");
+        } else {
+          curr.classList.add("hide");
+        }
+      });
       })
-    })
+    });
   }
 });
 
@@ -152,12 +141,12 @@ function search() {
         //document.getElementById("toname").innerHTML = result.receivername;
         var container = document.getElementById(mail);
         if (container) {
-
         } else {
           const msgbox = document.createElement("div");
 
           var toname = document.createElement("div");
-          toname.classList.add("chats");
+          toname.classList.add("toname");
+          toname.innerText = result.receivername;
           msgbox.append(toname);
 
           var chats = document.createElement("div");
@@ -197,23 +186,22 @@ function search() {
           const name = document.createElement("div");
           name.innerText = result.receivername;
           name.classList.add("usn");
-          left.append(name);   
+          name.classList.add(mail);
+          left.append(name);
 
           button = document.querySelectorAll(".msgsend");
           message = document.querySelectorAll(".textbox");
 
-          //testing
-          button.forEach((currElement)=> {
+          button.forEach((currElement) => {
             var nameofcurr = currElement.name;
             console.log("inside for each");
-            currElement.addEventListener('click' , ()=>{
-              console.log("in button")
+            currElement.addEventListener("click", () => {
+              console.log("in button");
               var currmsg = null;
-              for(var i=0;i<message.length;i++)
-              {
-                if(message[i].name == nameofcurr)
-                {
+              for (var i = 0; i < message.length; i++) {
+                if (message[i].name == nameofcurr) {
                   currmsg = message[i].value;
+                  message[i].value = "";
                   break;
                 }
               }
@@ -224,11 +212,26 @@ function search() {
               msg.innerText = currmsg;
               var msgbox = document.getElementById(nameofcurr);
               msgbox.querySelector(".chats").append(msg);
-          
-          
-              socket.emit('send-message' , currmsg , nameofcurr);
+
+              socket.emit("send-message", currmsg, nameofcurr);
+            });
+          });
+
+          usn = document.querySelectorAll(".usn");
+          right = document.querySelectorAll(".right");
+
+          usn.forEach((currElement) => {
+            currElement.addEventListener('click' , ()=>{
+              var idforsearch = currElement.classList[1];
+              right.forEach((curr) => {
+              if (curr.id == idforsearch) {
+                curr.classList.remove("hide");
+              } else {
+                curr.classList.add("hide");
+              }
+            });
             })
-          })
+          });
         }
       }
 
