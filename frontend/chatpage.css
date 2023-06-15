@@ -44,9 +44,16 @@ div.left {
 
 .chats{
     background-color: aqua;
-    overflow: hidden;
+    overflow: scroll;
+    max-height: 600px;
 }
 
 .hide{
     display: none;
+}
+.bold{
+    font-weight: bold;
+}
+.all-msgs{
+    max-height: 100%;
 }

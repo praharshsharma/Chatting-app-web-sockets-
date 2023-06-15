@@ -2,7 +2,7 @@ const socket = io("http://localhost:5001");
 
 socket.emit("home-page-visited");
 
-const left = document.querySelector(".left");
+var left = document.querySelector(".left");
 var allmsgs = document.getElementById("all-msgs");
 
 var message = document.querySelectorAll(".textbox");
@@ -13,11 +13,26 @@ var right = document.querySelectorAll(".right");
 socket.on("receive-message", (message, mailid, sendername) => {
   var container = document.getElementById(mailid);
   if (container) {
+    if (container.classList.contains("hide")) {
+      usn.forEach((currleft) => {
+        if (currleft.classList[1] == mailid) {
+          currleft.classList.add("bold");
+        }
+      })
+    }
+
+
     const msg = document.createElement("div");
     msg.classList.add("m");
     msg.classList.add("l");
     msg.innerText = message;
     container.querySelector(".chats").append(msg);
+
+    //to make it to the bottom
+
+    // var lastele = container.querySelector(".chats").lastElementChild;
+    // lastele.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    // container.querySelector(".chats").scrollTop = container.querySelector(".chats").scrollHeight - container.querySelector(".chats").clientHeight;
   } else {
     //making right side
     const msgbox = document.createElement("div");
@@ -56,6 +71,7 @@ socket.on("receive-message", (message, mailid, sendername) => {
     msgbox.append(inputdiv);
 
     msgbox.classList.add("right");
+    msgbox.classList.add("hide");
     msgbox.setAttribute("id", mailid);
 
     allmsgs.append(msgbox);
@@ -65,6 +81,7 @@ socket.on("receive-message", (message, mailid, sendername) => {
     uname.innerText = sendername;
     uname.classList.add("usn");
     uname.classList.add(mailid);
+    uname.classList.add("bold");
     left.append(uname);
 
     //displaying message
@@ -92,14 +109,21 @@ socket.on("receive-message", (message, mailid, sendername) => {
           }
         }
         //displaying message
-        const msg = document.createElement("div");
-        msg.classList.add("m");
-        msg.classList.add("r");
-        msg.innerText = currmsg;
-        var msgbox = document.getElementById(nameofcurr);
-        msgbox.querySelector(".chats").append(msg);
+        if (currmsg) {
+          const msg = document.createElement("div");
+          msg.classList.add("m");
+          msg.classList.add("r");
+          msg.innerText = currmsg;
+          var msgbox = document.getElementById(nameofcurr);
+          msgbox.querySelector(".chats").append(msg);
+          //To make it to bottom
 
-        socket.emit("send-message", currmsg, nameofcurr);
+          // var lastele = msgbox.querySelector(".chats").lastElementChild;
+          // lastele.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          // msgbox.querySelector(".chats").scrollTop = msgbox.querySelector(".chats").scrollHeight - msgbox.querySelector(".chats").clientHeightHeight;
+          socket.emit("send-message", currmsg, nameofcurr);
+        }
+
       });
     });
 
@@ -107,15 +131,16 @@ socket.on("receive-message", (message, mailid, sendername) => {
     right = document.querySelectorAll(".right");
 
     usn.forEach((currElement) => {
-      currElement.addEventListener('click' , ()=>{
+      currElement.addEventListener('click', () => {
+        currElement.classList.remove("bold");
         var idforsearch = currElement.classList[1];
         right.forEach((curr) => {
-        if (curr.id == idforsearch) {
-          curr.classList.remove("hide");
-        } else {
-          curr.classList.add("hide");
-        }
-      });
+          if (curr.id == idforsearch) {
+            curr.classList.remove("hide");
+          } else {
+            curr.classList.add("hide");
+          }
+        });
       })
     });
   }
@@ -206,14 +231,17 @@ function search() {
                 }
               }
               //displaying message
-              const msg = document.createElement("div");
-              msg.classList.add("m");
-              msg.classList.add("r");
-              msg.innerText = currmsg;
-              var msgbox = document.getElementById(nameofcurr);
-              msgbox.querySelector(".chats").append(msg);
 
-              socket.emit("send-message", currmsg, nameofcurr);
+              if (currmsg) {
+                const msg = document.createElement("div");
+                msg.classList.add("m");
+                msg.classList.add("r");
+                msg.innerText = currmsg;
+                var msgbox = document.getElementById(nameofcurr);
+                msgbox.querySelector(".chats").append(msg);
+
+                socket.emit("send-message", currmsg, nameofcurr);
+              }
             });
           });
 
@@ -221,17 +249,23 @@ function search() {
           right = document.querySelectorAll(".right");
 
           usn.forEach((currElement) => {
-            currElement.addEventListener('click' , ()=>{
+            currElement.addEventListener('click', () => {
+              currElement.classList.remove("bold");
               var idforsearch = currElement.classList[1];
               right.forEach((curr) => {
-              if (curr.id == idforsearch) {
-                curr.classList.remove("hide");
-              } else {
-                curr.classList.add("hide");
-              }
-            });
+                if (curr.id == idforsearch) {
+                  curr.classList.remove("hide");
+                } else {
+                  curr.classList.add("hide");
+                }
+              });
             })
           });
+
+          right.forEach((curr) => {
+            curr.classList.add("hide");
+          })
+          msgbox.classList.remove("hide");
         }
       }
 

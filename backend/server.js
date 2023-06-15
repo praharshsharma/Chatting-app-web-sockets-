@@ -83,17 +83,19 @@ app.get("/", async (req, res) => {
                 return;
             })
 
-            socket.on('send-message' , async (message,mail)=> {
-                const reciever = await Socket.findOne({
-                    userId: mail
-                });
-                
-                const arr = reciever.socketid;
-                var sender = usr.email;
+            socket.on('send-message', async (message, mail) => {
+                if (message) {
+                    const reciever = await Socket.findOne({
+                        userId: mail
+                    });
 
-                arr.forEach((currElement)=>{
-                    socket.to(currElement.id).emit('receive-message' , message , sender , usr.fname);
-                })   
+                    const arr = reciever.socketid;
+                    var sender = usr.email;
+
+                    arr.forEach((currElement) => {
+                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname);
+                    })
+                }
             })
         })
 
