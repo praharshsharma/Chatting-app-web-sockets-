@@ -258,6 +258,7 @@ function search() {
                 msg.classList.add("m");
                 msg.classList.add("r");
                 msg.innerText = currmsg;
+                msg.append(time);
                 var msgbox = document.getElementById(nameofcurr);
                 msgbox.querySelector(".chats").append(msg);
 
