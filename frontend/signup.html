@@ -6,17 +6,44 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'>
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css'>
+    <link rel="stylesheet" href="./signin.css">
 </head>
 
-<body id = "body">
-    <form method="post" action="/signup">
-        <label for="fname">Email:</label><br>
-        <input type="text" id="email" name="email"><br>
-        <button id="submit">SUBMIT</button>
-        <div id="text"></div>
-    </form>
-    <a href="./signin">Signin</a>
+<body id="body">
+    <img src="images/chaticon.png" id="icon">
+    <div class="container">
+        <div class="screen">
+            <div class="screen__content">
+                <form method="post" action="/signup" class="login">
+                    <div class="login__field">
+                        <i class="login__icon fas fa-user"></i>
+                        <input type="text" id="email" name="email" class="login__input" placeholder="Email"><br>
+                    </div>
+                    <button id="submit" class="button login__submit">
+                        <span class="button__text">Sign Up</span>
+                        <i class="button__icon fas fa-chevron-right"></i>
+                    </button>
+                    <br><br>
+                    <div id="text" class="button__text"></div>
+                </form>
+                <div class="social-login">
+                    <h3><a href="./signin" class="button login__submit"><span class="button__text">Sign In</span>
+                        <i class="button__icon fas fa-chevron-right"></i></a>
+                    </h3>
+                </div>
+                <!-- <a href="./signin">Signin</a> -->
+            </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>
+        </div>
+    </div>
 </body>
-    <script src="./signup.js"></script>
+<script src="./signup.js"></script>
+
 </html>

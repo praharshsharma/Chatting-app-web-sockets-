@@ -1,22 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'>
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css'>
+    <link rel="stylesheet" href="./signin.css">
 </head>
+
 <body>
-    <form action="" method="post">
-        <label>First name:</label><br>
-        <input type="text" id="fname" name="fname"><br>
-        <label>Last name:</label><br>
-        <input type="text" id="lname" name="lname"><br>
-        <label>Phone Number</label><br>
-        <input type="text" id="mnumber" name="mnumber"><br>
-        <label>Password:</label><br>
-        <input type="password" id="password" name="password"><br>
-        <button type="submit">Submit</button>
-    </form>
+    <img src="images/chaticon.png" id="icon">
+    <div class="container">
+        <div class="screen">
+            <div class="screen__content">
+                <form action="" method="post" class="login">
+                    <div class="login__field">
+                        <!-- <i class="login__icon fas fa-text"></i> -->
+                        <input type="text" id="fname" name="fname" class="login__input" placeholder="First Name:"><br>
+                    </div>
+                    <div class="login__field">
+                        <!-- <i class="login__icon fas fa-text"></i> -->
+                        <input type="text" id="lname" name="lname" class="login__input" placeholder="Last name:"><br>
+                    </div>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-phone fa-rotate-90"></i>
+                        <input type="text" id="mnumber" name="mnumber" class="login__input"
+                            placeholder="Phone Number:"><br>
+                    </div>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-lock"></i>
+                        <input type="password" id="password" class="login__input" name="password"
+                            placeholder="Password"><br>
+                    </div>
+                    <button type="submit" class="button login__submit"><span class="button__text">Submit</span>
+                        <i class="button__icon fas fa-chevron-right"></i></button>
+                </form>
+            </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

@@ -30,7 +30,6 @@ const User = userModel.User;
 const Socket = socketModel.socketmodel;
 
 app.get("/", async (req, res) => {
-    console.log("in home");
     //check cookie
     //if signin true  then displays data
     //else redirect signin
@@ -105,10 +104,8 @@ app.get("/", async (req, res) => {
             //cookie delete
             //redirect to signin page
             token = req.cookies.jwt
-            console.log("in logout");
             let activeuser = await User.findOne({ _id: verifyuser._id.toString() });
             activeuser.tokens = activeuser.tokens.filter((currElement) => {
-                //console.log("in filter");
                 return currElement.token != token;
             })
 
@@ -118,15 +115,12 @@ app.get("/", async (req, res) => {
             const user = await Socket.findOne({
                 userId: usr.email
             });
-            console.log(idsocket);
             user.socketid = user.socketid.filter((currElement) => {
-                console.log(currElement);
                 return currElement.id != idsocket;
             })
 
             await user.save();
 
-            console.log("deletion complete");
             res.redirect("/signin");
         })
     }
@@ -135,30 +129,19 @@ app.get("/", async (req, res) => {
     }
 
     app.post('/endpoint', async (req, res) => {
-        // Access the data from the request body
         const mail = req.body.name;
-        console.log(mail);
-        // Perform any necessary operations with the data
-        // ...
-
-        // Send a response back
+        
         const user = await Socket.findOne({
             userId: mail
         });
-        // console.log(user);
         if (user) {
             const dbuser = await User.findOne({
                 email: user.userId
             });
-            // console.log(dbuser);
-            console.log("in server.js search")
-            console.log(dbuser.fname);
-            // res.send(dbuser.fname);
             res.json({ receivername: dbuser.fname });
         }
         else {
             res.json({ message: "User not found" });
-            // res.render(path.join(__dirname, "../frontend/home.ejs"), { usr });
         }
     });
 
@@ -170,7 +153,6 @@ let str1 = "<a href='./signup'>Signup</a>"
 
 
 app.post("/signup", async function (req, res) {
-    console.log("in signup post");
     let mail = req.body.email;
     const user = await User.findOne({
         email: req.body.email
@@ -192,19 +174,11 @@ app.post("/signup", async function (req, res) {
     });
     await token.save();
     const url = `${password.baseurl}/${mail}/verify/${token.token}`;
-    console.log("in post ");
     await sendEmail(mail, "Verify Email", url);
-
-    // app.get("/loading" , ()=> {
-    //     res.send("Go to the verification link");
-    // })
-
-    // res.redirect("/loading");
 
 })
 
 app.get("/signup", function (req, res) {
-    console.log("in get");
     res.sendFile(path.join(__dirname, "../frontend/signup.html"));
 })
 
@@ -221,12 +195,9 @@ app.get("/signin", async (req, res) => {
 
 
     app.post("/signin", async (req, res) => {
-        console.log("in sign in ");
         const user = await User.findOne({
             email: req.body.email
         });
-        //console.log(user);
-        //console.log(user.password);
         if (user) {
             const isMatch = await bcrypt.compare(req.body.password, user.password);
             if (isMatch) {
@@ -237,7 +208,6 @@ app.get("/signin", async (req, res) => {
                     expires: new Date(Date.now() + 3600000),
                     httpOnly: true
                 });
-                console.log(req.cookies.jwt);
 
                 res.redirect("/");
             }
@@ -253,20 +223,14 @@ app.get("/signin", async (req, res) => {
 
 
 app.get("//:id/verify/:token", async (req, res) => {
-    console.log(req.url);
-    console.log("in get verify");
     try {
-        console.log(req.params.id);
-        console.log(req.params.token);
         const token = await Token.Model.findOne({
             userId: req.params.id,
             token: req.params.token,
         });
-        console.log(token);
         if (!token) return res.status(400).send({ message: "Invalid link" });
         res.sendFile(path.join(__dirname, "../frontend/info.html"));
         app.post("//:id/verify/:token", async (req, res) => {
-            console.log("in verify post");
             let newUser = new User({
                 email: req.params.id,
                 fname: req.body.fname,
@@ -279,8 +243,6 @@ app.get("//:id/verify/:token", async (req, res) => {
             await token.deleteOne();
             res.redirect("/signin");
         })
-        console.log("in try ");
-
     } catch (error) {
         res.status(500).send({ message: "Internal Server Error" });
     }
