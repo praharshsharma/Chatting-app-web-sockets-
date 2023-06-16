@@ -102,7 +102,9 @@ body {
 	position: absolute;
 	top: 30px;
 	color: #7875B5;
+
 }
+
 
 .login__input {
 	border: none;
@@ -188,3 +190,5 @@ a:link{
 	z-index: 1;
 	height: 100px;
 }
+
+

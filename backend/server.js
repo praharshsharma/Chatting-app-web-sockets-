@@ -3,6 +3,7 @@ const app = express();
 const bodyparser = require("body-parser");
 const connection = require("./db");
 const path = require('path');
+const multer = require('multer');
 app.use(bodyparser.urlencoded({ extended: true }));
 const sendEmail = require("./utils/sendEmail");
 const Token = require("./models/token");
@@ -25,6 +26,17 @@ app.use(express.static(staticPath));
 app.use(bodyparser.json());
 // database connection
 connection();
+
+const Storage = multer.diskStorage({
+    destination: "./frontend/uploads",
+    filename: (req,file,cb)=>{
+        cb(null,file.fieldname+"_" +Date.now()+path.extname(file.originalname));
+    }
+})
+
+const upload = multer({
+    storage:Storage
+}).single('profile')
 
 const User = userModel.User;
 const Socket = socketModel.socketmodel;
@@ -82,7 +94,7 @@ app.get("/", async (req, res) => {
                 return;
             })
 
-            socket.on('send-message', async (message, mail, hour , minute) => {
+            socket.on('send-message', async (message, mail,hour,minute) => {
                 if (message) {
                     const reciever = await Socket.findOne({
                         userId: mail
@@ -92,7 +104,7 @@ app.get("/", async (req, res) => {
                     var sender = usr.email;
 
                     arr.forEach((currElement) => {
-                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname , hour , minute);
+                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname,hour,minute);
                     })
                 }
             })
@@ -230,13 +242,14 @@ app.get("//:id/verify/:token", async (req, res) => {
         });
         if (!token) return res.status(400).send({ message: "Invalid link" });
         res.sendFile(path.join(__dirname, "../frontend/info.html"));
-        app.post("//:id/verify/:token", async (req, res) => {
+        app.post("//:id/verify/:token", upload, async (req, res) => {
             let newUser = new User({
                 email: req.params.id,
                 fname: req.body.fname,
                 lname: req.body.lname,
                 password: req.body.password,
                 mnum: req.body.mnumber,
+                profpic : req.file.filename,
                 verified: true
             })
             await newUser.save();
