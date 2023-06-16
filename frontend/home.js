@@ -13,17 +13,17 @@ var right = document.querySelectorAll(".right");
 
 
 function handleKeyPress(event, nameofcurr) {
-  if (event.keyCode === 13) { 
-    event.preventDefault(); 
-    button.forEach((currbutt)=>{
-      if(currbutt.name==nameofcurr){
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    button.forEach((currbutt) => {
+      if (currbutt.name == nameofcurr) {
         currbutt.click();
       }
     })
   }
 }
 
-socket.on("receive-message", (message, mailid, sendername) => {
+socket.on("receive-message", (textmsg, mailid, sendername, hour, minute) => {
   var container = document.getElementById(mailid);
   if (container) {
     if (container.classList.contains("hide")) {
@@ -35,9 +35,12 @@ socket.on("receive-message", (message, mailid, sendername) => {
     }
 
     const msg = document.createElement("div");
+    const time = document.createElement("div");
+    time.innerText = `${hour}:${minute}`;
     msg.classList.add("m");
     msg.classList.add("l");
-    msg.innerText = message;
+    msg.innerText = textmsg;
+    msg.append(time);
     container.querySelector(".chats").append(msg);
 
     container.querySelector(".chats").scrollTop = container.querySelector(".chats").scrollHeight;
@@ -92,13 +95,16 @@ socket.on("receive-message", (message, mailid, sendername) => {
 
     //displaying message
     const msg = document.createElement("div");
+    const time = document.createElement("div");
+    time.innerText = `${hour}:${minute}`;
     msg.classList.add("m");
     msg.classList.add("l");
-    msg.innerText = message;
+    msg.innerText = textmsg;
+    msg.append(time);
     msgbox.querySelector(".chats").append(msg);
 
     button = document.querySelectorAll(".msgsend");
-    message.forEach((currElement)=>{
+    message.forEach((currElement) => {
       currElement.removeAttribute("onkeydown");
     })
     message = document.querySelectorAll(".textbox");
@@ -118,13 +124,19 @@ socket.on("receive-message", (message, mailid, sendername) => {
         //displaying message
         if (currmsg) {
           const msg = document.createElement("div");
+          let hour = new Date().getHours();
+          let minute = new Date().getMinutes();
+          const time = document.createElement("div");
+          time.innerText = `${hour}:${minute}`;
           msg.classList.add("m");
           msg.classList.add("r");
           msg.innerText = currmsg;
+          msg.append(time);
+
           var msgbox = document.getElementById(nameofcurr);
           msgbox.querySelector(".chats").append(msg);
-          
-          socket.emit("send-message", currmsg, nameofcurr);
+
+          socket.emit("send-message", currmsg, nameofcurr, hour, minute);
         }
 
         chats.scrollTop = chats.scrollHeight;
@@ -189,7 +201,7 @@ function search() {
           inputdiv.classList.add("msg-input-div");
           const label = document.createElement("label");
           label.innerText = "Type a message-";
-         
+
           var input1 = document.createElement("input");
           var input2 = document.createElement("input");
           input1.setAttribute("type", "text");
@@ -219,7 +231,7 @@ function search() {
           left.append(name);
 
           button = document.querySelectorAll(".msgsend");
-          message.forEach((currElement)=>{
+          message.forEach((currElement) => {
             currElement.removeAttribute("onkeydown");
           })
           message = document.querySelectorAll(".textbox");
@@ -239,13 +251,19 @@ function search() {
 
               if (currmsg) {
                 const msg = document.createElement("div");
+                let hour = new Date().getHours();
+                let minute = new Date().getMinutes();
+                const time = document.createElement("div");
+                time.innerText = `${hour}:${minute}`;
                 msg.classList.add("m");
                 msg.classList.add("r");
                 msg.innerText = currmsg;
+                msg.append(time);
+
                 var msgbox = document.getElementById(nameofcurr);
                 msgbox.querySelector(".chats").append(msg);
 
-                socket.emit("send-message", currmsg, nameofcurr);
+                socket.emit("send-message", currmsg, nameofcurr,hour,minute);
               }
 
               chats.scrollTop = chats.scrollHeight;

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const password = require("../password");
+const { buffer } = require("stream/consumers");
 
 const Schema = mongoose.Schema;
 
@@ -11,6 +12,7 @@ const userSchema = new Schema({
     lname: { type: String, required: true },
     password: { type: String, required: true },
     mnum: { type: String, required: true },
+    profpic: {type: String},
     verified: { type: Boolean, required: true, default: false },
     tokens:[{
         token:{type: String}
