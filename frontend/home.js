@@ -28,11 +28,8 @@ socket.on("receive-message", (message, mailid, sendername) => {
     msg.innerText = message;
     container.querySelector(".chats").append(msg);
 
-    //to make it to the bottom
+    container.querySelector(".chats").scrollTop = container.querySelector(".chats").scrollHeight;
 
-    // var lastele = container.querySelector(".chats").lastElementChild;
-    // lastele.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    // container.querySelector(".chats").scrollTop = container.querySelector(".chats").scrollHeight - container.querySelector(".chats").clientHeight;
   } else {
     //making right side
     const msgbox = document.createElement("div");
@@ -44,6 +41,7 @@ socket.on("receive-message", (message, mailid, sendername) => {
 
     var chats = document.createElement("div");
     chats.classList.add("chats");
+    chats.scrollTop = chats.scrollHeight;
     msgbox.append(chats);
 
     var inputdiv = document.createElement("div");
@@ -124,6 +122,8 @@ socket.on("receive-message", (message, mailid, sendername) => {
           socket.emit("send-message", currmsg, nameofcurr);
         }
 
+        chats.scrollTop = chats.scrollHeight;
+
       });
     });
 
@@ -148,6 +148,7 @@ socket.on("receive-message", (message, mailid, sendername) => {
 
 function search() {
   const mail = document.getElementById("ns").value;
+  document.getElementById("ns").value = null;
   const data = { name: mail };
 
   fetch("/endpoint", {
@@ -161,9 +162,10 @@ function search() {
     .then((result) => {
       // Handle the response
       if (result.message) {
-        document.getElementById("dec").innerHTML = result.message;
+        document.getElementById("dec").innerText = result.message;
       } else {
         //document.getElementById("toname").innerHTML = result.receivername;
+        document.getElementById("dec").innerText = "";
         var container = document.getElementById(mail);
         if (container) {
         } else {
@@ -176,6 +178,7 @@ function search() {
 
           var chats = document.createElement("div");
           chats.classList.add("chats");
+          chats.scrollTop = chats.scrollHeight;
           msgbox.append(chats);
 
           var inputdiv = document.createElement("div");
@@ -242,6 +245,8 @@ function search() {
 
                 socket.emit("send-message", currmsg, nameofcurr);
               }
+
+              chats.scrollTop = chats.scrollHeight;
             });
           });
 
