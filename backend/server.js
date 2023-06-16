@@ -82,7 +82,7 @@ app.get("/", async (req, res) => {
                 return;
             })
 
-            socket.on('send-message', async (message, mail) => {
+            socket.on('send-message', async (message, mail, hour , minute) => {
                 if (message) {
                     const reciever = await Socket.findOne({
                         userId: mail
@@ -92,7 +92,7 @@ app.get("/", async (req, res) => {
                     var sender = usr.email;
 
                     arr.forEach((currElement) => {
-                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname);
+                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname , hour , minute);
                     })
                 }
             })
