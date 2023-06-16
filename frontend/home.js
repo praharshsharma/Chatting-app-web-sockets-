@@ -60,9 +60,6 @@ socket.on("receive-message", (message, mailid, sendername) => {
     input1.setAttribute("name", mailid);
     input2.setAttribute("name", mailid);
     input2.setAttribute("value", "send");
-    //form.append(input1);
-    //form.append(input2);
-    //inputdiv.append(form);
     inputdiv.append(label);
     inputdiv.append(input1);
     inputdiv.append(input2);
@@ -114,11 +111,6 @@ socket.on("receive-message", (message, mailid, sendername) => {
           msg.innerText = currmsg;
           var msgbox = document.getElementById(nameofcurr);
           msgbox.querySelector(".chats").append(msg);
-          //To make it to bottom
-
-          // var lastele = msgbox.querySelector(".chats").lastElementChild;
-          // lastele.scrollIntoView({ behavior: 'smooth', block: 'end' });
-          // msgbox.querySelector(".chats").scrollTop = msgbox.querySelector(".chats").scrollHeight - msgbox.querySelector(".chats").clientHeightHeight;
           socket.emit("send-message", currmsg, nameofcurr);
         }
 
