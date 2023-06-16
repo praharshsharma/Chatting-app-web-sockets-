@@ -9,6 +9,7 @@
 
 body {
 	background: linear-gradient(90deg, #C7C5F4, #776BCC);		
+	max-height: 100%;
 }
 
 .container {
@@ -16,6 +17,8 @@ body {
 	align-items: center;
 	justify-content: center;
 	min-height: 100vh;
+	max-height: 100vh;
+	overflow: hidden;
 }
 
 .screen {		
@@ -87,7 +90,7 @@ body {
 .login {
 	width: 320px;
 	padding: 30px;
-	padding-top: 156px;
+	padding-top: 20%;
 }
 
 .login__field {
@@ -155,8 +158,7 @@ body {
 	height: 140px;
 	width: 160px;
 	text-align: center;
-	bottom: 0px;
-	right: 0px;
+	right: 1%;
 	color: #fff;
 }
 
@@ -180,9 +182,9 @@ a:link{
 	text-decoration: none;
 }
 #icon{
-	position: fixed;
-	top: 13%;
-	left:47%;
+	position: relative;
+	top: 5%;
+	left:37%;
 	z-index: 1;
 	height: 100px;
 }

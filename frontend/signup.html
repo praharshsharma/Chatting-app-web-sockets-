@@ -12,14 +12,15 @@
 </head>
 
 <body id="body">
-    <img src="images/chaticon.png" id="icon">
+    
     <div class="container">
         <div class="screen">
+            <img src="images/chaticon.png" id="icon">
             <div class="screen__content">
                 <form method="post" action="/signup" class="login">
                     <div class="login__field">
                         <i class="login__icon fas fa-user"></i>
-                        <input type="text" id="email" name="email" class="login__input" placeholder="Email"><br>
+                        <input type="text" id="email" name="email" class="login__input" placeholder="Email" required><br>
                     </div>
                     <button id="submit" class="button login__submit">
                         <span class="button__text">Sign Up</span>
