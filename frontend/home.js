@@ -10,6 +10,19 @@ var button = document.querySelectorAll(".msgsend");
 var usn = document.querySelectorAll(".usn");
 var right = document.querySelectorAll(".right");
 
+
+
+function handleKeyPress(event, nameofcurr) {
+  if (event.keyCode === 13) { 
+    event.preventDefault(); 
+    button.forEach((currbutt)=>{
+      if(currbutt.name==nameofcurr){
+        currbutt.click();
+      }
+    })
+  }
+}
+
 socket.on("receive-message", (message, mailid, sendername) => {
   var container = document.getElementById(mailid);
   if (container) {
@@ -20,7 +33,6 @@ socket.on("receive-message", (message, mailid, sendername) => {
         }
       })
     }
-
 
     const msg = document.createElement("div");
     msg.classList.add("m");
@@ -46,11 +58,8 @@ socket.on("receive-message", (message, mailid, sendername) => {
 
     var inputdiv = document.createElement("div");
     inputdiv.classList.add("msg-input-div");
-    //var form = document.createElement("form");
-    //form.classList.add("csmg");
     const label = document.createElement("label");
     label.innerText = "Type a message-";
-    //form.append(label);
     var input1 = document.createElement("input");
     var input2 = document.createElement("input");
     input1.setAttribute("type", "text");
@@ -60,9 +69,8 @@ socket.on("receive-message", (message, mailid, sendername) => {
     input1.setAttribute("name", mailid);
     input2.setAttribute("name", mailid);
     input2.setAttribute("value", "send");
-    //form.append(input1);
-    //form.append(input2);
-    //inputdiv.append(form);
+    input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mailid + "')");
+
     inputdiv.append(label);
     inputdiv.append(input1);
     inputdiv.append(input2);
@@ -90,14 +98,15 @@ socket.on("receive-message", (message, mailid, sendername) => {
     msgbox.querySelector(".chats").append(msg);
 
     button = document.querySelectorAll(".msgsend");
+    message.forEach((currElement)=>{
+      currElement.removeAttribute("onkeydown");
+    })
     message = document.querySelectorAll(".textbox");
 
-    //testing
+
     button.forEach((currElement) => {
       var nameofcurr = currElement.name;
-      console.log("inside for each");
       currElement.addEventListener("click", () => {
-        console.log("in button");
         var currmsg = null;
         for (var i = 0; i < message.length; i++) {
           if (message[i].name == nameofcurr) {
@@ -114,11 +123,7 @@ socket.on("receive-message", (message, mailid, sendername) => {
           msg.innerText = currmsg;
           var msgbox = document.getElementById(nameofcurr);
           msgbox.querySelector(".chats").append(msg);
-          //To make it to bottom
-
-          // var lastele = msgbox.querySelector(".chats").lastElementChild;
-          // lastele.scrollIntoView({ behavior: 'smooth', block: 'end' });
-          // msgbox.querySelector(".chats").scrollTop = msgbox.querySelector(".chats").scrollHeight - msgbox.querySelector(".chats").clientHeightHeight;
+          
           socket.emit("send-message", currmsg, nameofcurr);
         }
 
@@ -164,7 +169,6 @@ function search() {
       if (result.message) {
         document.getElementById("dec").innerText = result.message;
       } else {
-        //document.getElementById("toname").innerHTML = result.receivername;
         document.getElementById("dec").innerText = "";
         var container = document.getElementById(mail);
         if (container) {
@@ -183,11 +187,9 @@ function search() {
 
           var inputdiv = document.createElement("div");
           inputdiv.classList.add("msg-input-div");
-          //var form = document.createElement("form");
-          //form.classList.add("csmg");
           const label = document.createElement("label");
           label.innerText = "Type a message-";
-          //form.append(label);
+         
           var input1 = document.createElement("input");
           var input2 = document.createElement("input");
           input1.setAttribute("type", "text");
@@ -197,9 +199,8 @@ function search() {
           input1.setAttribute("name", mail);
           input2.setAttribute("name", mail);
           input2.setAttribute("value", "send");
-          //form.append(input1);
-          //form.append(input2);
-          //inputdiv.append(form);
+          input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mail + "')");
+
           inputdiv.append(label);
           inputdiv.append(input1);
           inputdiv.append(input2);
@@ -218,13 +219,14 @@ function search() {
           left.append(name);
 
           button = document.querySelectorAll(".msgsend");
+          message.forEach((currElement)=>{
+            currElement.removeAttribute("onkeydown");
+          })
           message = document.querySelectorAll(".textbox");
 
           button.forEach((currElement) => {
             var nameofcurr = currElement.name;
-            console.log("inside for each");
             currElement.addEventListener("click", () => {
-              console.log("in button");
               var currmsg = null;
               for (var i = 0; i < message.length; i++) {
                 if (message[i].name == nameofcurr) {
