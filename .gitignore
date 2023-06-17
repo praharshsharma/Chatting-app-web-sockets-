@@ -2,7 +2,9 @@
 /.env
 /todo.txt
 backend/password.js
-/rough.js
+frontend/rough.js
 /rough.html
 /index.html
 /style.css
+/rough.js
+frontend/style.css

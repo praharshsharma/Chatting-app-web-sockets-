@@ -104,7 +104,7 @@ app.get("/", async (req, res) => {
                     var sender = usr.email;
 
                     arr.forEach((currElement) => {
-                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname,hour,minute);
+                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname+" "+usr.lname,hour,minute,usr.profpic);
                     })
                 }
             })
@@ -150,7 +150,7 @@ app.get("/", async (req, res) => {
             const dbuser = await User.findOne({
                 email: user.userId
             });
-            res.json({ receivername: dbuser.fname });
+            res.json({ receivername: dbuser.fname+" "+dbuser.lname , profpic : dbuser.profpic});
         }
         else {
             res.json({ message: "User not found" });

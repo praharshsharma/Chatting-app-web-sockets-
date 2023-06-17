@@ -90,7 +90,7 @@ body {
 .login {
 	width: 320px;
 	padding: 30px;
-	padding-top: 20%;
+	padding-top: 14%;
 }
 
 .login__field {
@@ -189,6 +189,12 @@ a:link{
 	left:37%;
 	z-index: 1;
 	height: 100px;
+}
+
+.logininfo {
+	width: 320px;
+	padding: 30px;
+	padding-top: 10%;
 }
 
 
