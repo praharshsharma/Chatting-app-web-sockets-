@@ -16,9 +16,9 @@ prof.addEventListener('click', () => {
   dbb[0].classList.toggle('hide');
 })
 
-$('#textarea').emojioneArea({
-  pickerPosition: 'bottom'
-})
+// $('#textarea').emojioneArea({
+//   pickerPosition: 'bottom'
+// })
 
 function handleKeyPress(event, nameofcurr) {
   if (event.keyCode === 13) {
