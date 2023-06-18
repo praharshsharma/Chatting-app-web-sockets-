@@ -11,9 +11,13 @@ var usn = document.querySelectorAll(".usn");
 var right = document.querySelectorAll(".right");
 
 var prof = document.querySelector('.profile');
-var dbb=document.getElementsByClassName('dabba');
-prof.addEventListener('click',()=>{
+var dbb = document.getElementsByClassName('dabba');
+prof.addEventListener('click', () => {
   dbb[0].classList.toggle('hide');
+})
+
+$('#textarea').emojioneArea({
+  pickerPosition: 'bottom'
 })
 
 function handleKeyPress(event, nameofcurr) {
@@ -27,7 +31,7 @@ function handleKeyPress(event, nameofcurr) {
   }
 }
 
-socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpic) => {
+socket.on("receive-message", (textmsg, mailid, sendername, hour, minute, profpic) => {
   var container = document.getElementById(mailid);
   if (container) {
     if (container.classList.contains("hide")) {
@@ -40,14 +44,14 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
       })
     }
 
-    usn.forEach((currElement)=>{
-      if(currElement.classList[1] != mailid){
+    usn.forEach((currElement) => {
+      if (currElement.classList[1] != mailid) {
         left.append(currElement);
       }
     })
 
     usn = document.querySelectorAll(".usn");
-    
+
     const msg = document.createElement("div");
     const time = document.createElement("div");
     time.innerText = `${hour}:${minute}`;
@@ -80,7 +84,7 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
     // label.innerText = "Type a message-";
     var input1 = document.createElement("input");
     var input2 = document.createElement("input");
-    input1.setAttribute("placeholder","Type a message");
+    input1.setAttribute("placeholder", "Type a message");
     input1.setAttribute("type", "text");
     input2.setAttribute("type", "submit");
     input1.setAttribute("class", "textbox");
@@ -88,7 +92,10 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
     input1.setAttribute("name", mailid);
     input2.setAttribute("name", mailid);
     input2.setAttribute("value", "send");
+    // input1.classList.add("mytextarea");
+    // input1.append("bjdb");
     //input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mailid + "')");
+    // input1.classList.add("textarea");
 
     inputdiv.append(label);
     inputdiv.append(input1);
@@ -101,10 +108,20 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
 
     allmsgs.append(msgbox);
 
+    // var script1 = document.createElement("script");
+    // var script2 = document.createElement("script");
+    // var script3 = document.createElement("script");
+    // script1.src = 'https://code.jquery.com/jquery-3.7.0.min.js';
+    // script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js';
+    // script3.innerHTML = "$('.textbox').emojioneArea({pickerPosition:'bottom'})";
+    // document.body.appendChild(script1);
+    // document.body.appendChild(script2);
+    // document.body.appendChild(script3);
+
     //making left side
     var uname = document.createElement("div");
     var image = document.createElement("img");
-    image.setAttribute("class" , "leftimage");
+    image.setAttribute("class", "leftimage");
     image.setAttribute("src", `./uploads/${profpic}`);
     let newdiv = document.createElement("div");
     newdiv.append(image);
@@ -122,7 +139,7 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
     left.innerText = "";
     left.append(uname);
 
-    usn.forEach((currElement)=>{
+    usn.forEach((currElement) => {
       left.append(currElement);
     })
 
@@ -174,22 +191,20 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
           msgbox.querySelector(".chats").append(msg);
 
           socket.emit("send-message", currmsg, nameofcurr, hour, minute);
-          
+
           left.innerText = "";
-          usn.forEach((curr)=>{
-            if(curr.classList[1] == nameofcurr)
-            {
+          usn.forEach((curr) => {
+            if (curr.classList[1] == nameofcurr) {
               left.append(curr);
             }
           })
 
-          usn.forEach((curr)=>{
-            if(curr.classList[1] != nameofcurr)
-            {
+          usn.forEach((curr) => {
+            if (curr.classList[1] != nameofcurr) {
               left.append(curr);
             }
           })
-          
+
           usn = document.querySelectorAll(".usn");
           message = document.querySelectorAll(".textbox");
 
@@ -213,18 +228,16 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
         right.forEach((curr) => {
           if (curr.id == idforsearch) {
             curr.classList.remove("hide");
-          message.forEach((elem)=>{
-            console.log(elem.name);
-          if(elem.name == idforsearch)
-          {
-            console.log("207 line");
-            elem.setAttribute("onkeydown", "handleKeyPress(event, '" + idforsearch + "')");
-          }
-          else
-          {
-            elem.removeAttribute("onkeydown");
-          }
-        })
+            message.forEach((elem) => {
+              console.log(elem.name);
+              if (elem.name == idforsearch) {
+                console.log("207 line");
+                elem.setAttribute("onkeydown", "handleKeyPress(event, '" + idforsearch + "')");
+              }
+              else {
+                elem.removeAttribute("onkeydown");
+              }
+            })
           } else {
             curr.classList.add("hide");
           }
@@ -275,7 +288,7 @@ function search() {
 
           var input1 = document.createElement("input");
           var input2 = document.createElement("input");
-          input1.setAttribute("placeholder","Type a message");
+          input1.setAttribute("placeholder", "Type a message");
           input1.setAttribute("type", "text");
           input2.setAttribute("type", "submit");
           input1.setAttribute("class", "textbox");
@@ -283,22 +296,35 @@ function search() {
           input1.setAttribute("name", mail);
           input2.setAttribute("name", mail);
           input2.setAttribute("value", "send");
+          // input1.classList.add("mytextarea");
+          // input1.append("bjdb");
+          // input1.classList.add("textarea");
           input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mail + "')");
-
+          
           inputdiv.append(label);
           inputdiv.append(input1);
           inputdiv.append(input2);
           msgbox.append(inputdiv);
-
+          
           msgbox.classList.add("right");
           msgbox.setAttribute("id", mail);
-
+          
           allmsgs.append(msgbox);
+          
+          // var script1 = document.createElement("script");
+          // var script2 = document.createElement("script");
+          // var script3 = document.createElement("script");
+          // script1.src = 'https://code.jquery.com/jquery-3.7.0.min.js';
+          // script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js';
+          // script3.innerHTML = "$('.textbox').emojioneArea({pickerPosition:'bottom'})";
+          // document.body.appendChild(script1);
+          // document.body.appendChild(script2);
+          // document.body.appendChild(script3);
 
           //making left side
           const name = document.createElement("div");
           var image = document.createElement("img");
-          image.setAttribute("class" , "leftimage");
+          image.setAttribute("class", "leftimage");
           image.setAttribute("src", `./uploads/${result.profpic}`);
           let newdiv = document.createElement("div");
           newdiv.append(image);
@@ -314,7 +340,7 @@ function search() {
           left.innerText = "";
           left.append(name);
 
-          usn.forEach((currElement)=>{
+          usn.forEach((currElement) => {
             left.append(currElement);
           })
 
@@ -353,27 +379,25 @@ function search() {
                 var msgbox = document.getElementById(nameofcurr);
                 msgbox.querySelector(".chats").append(msg);
 
-                socket.emit("send-message", currmsg, nameofcurr,hour,minute);
+                socket.emit("send-message", currmsg, nameofcurr, hour, minute);
 
                 left.innerText = "";
-          usn.forEach((curr)=>{
-            if(curr.classList[1] == nameofcurr)
-            {
-              left.append(curr);
-            }
-          })
+                usn.forEach((curr) => {
+                  if (curr.classList[1] == nameofcurr) {
+                    left.append(curr);
+                  }
+                })
 
-          usn.forEach((curr)=>{
-            if(curr.classList[1] != nameofcurr)
-            {
-              left.append(curr);
-            }
-          })
+                usn.forEach((curr) => {
+                  if (curr.classList[1] != nameofcurr) {
+                    left.append(curr);
+                  }
+                })
               }
-              
+
               chats.scrollTop = chats.scrollHeight;
               usn = document.querySelectorAll(".usn");
-          right = document.querySelectorAll(".right");
+              right = document.querySelectorAll(".right");
             });
           });
 
@@ -387,18 +411,16 @@ function search() {
               right.forEach((curr) => {
                 if (curr.id == idforsearch) {
                   curr.classList.remove("hide");
-                  message.forEach((elem)=>{
+                  message.forEach((elem) => {
                     console.log(elem.name);
-                  if(elem.name == idforsearch)
-                  {
-                    console.log("207 line");
-                    elem.setAttribute("onkeydown", "handleKeyPress(event, '" + idforsearch + "')");
-                  }
-                  else
-                  {
-                    elem.removeAttribute("onkeydown");
-                  }
-                })
+                    if (elem.name == idforsearch) {
+                      console.log("207 line");
+                      elem.setAttribute("onkeydown", "handleKeyPress(event, '" + idforsearch + "')");
+                    }
+                    else {
+                      elem.removeAttribute("onkeydown");
+                    }
+                  })
                 } else {
                   curr.classList.add("hide");
                 }
