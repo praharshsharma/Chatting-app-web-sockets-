@@ -46,7 +46,7 @@ http://localhost:3000/
  - HTML<br>
  - CSS<br>
  - Javascript<br><br>
- ![](frontend/images/demo.png)
+ ![](frontend/images/demo.png)<br><br>
  ![](frontend/images/demo2.png)<br>
  - Chat list shuffles according to the latest messages<br><br>
  ![](frontend/images/demo3.png)<br>
