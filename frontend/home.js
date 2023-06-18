@@ -16,6 +16,10 @@ prof.addEventListener('click',()=>{
   dbb[0].classList.toggle('hide');
 })
 
+$('#textarea').emojioneArea({
+  pickerPosition:'bottom'
+})
+
 function handleKeyPress(event, nameofcurr) {
   if (event.keyCode === 13) {
     event.preventDefault();
@@ -78,16 +82,19 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
     inputdiv.classList.add("msg-input-div");
     const label = document.createElement("label");
     // label.innerText = "Type a message-";
-    var input1 = document.createElement("input");
+    var input1 = document.createElement("textarea");
     var input2 = document.createElement("input");
     input1.setAttribute("placeholder","Type a message");
     input1.setAttribute("type", "text");
+    input1.setAttribute("id", "textarea");
     input2.setAttribute("type", "submit");
     input1.setAttribute("class", "textbox");
     input2.setAttribute("class", "msgsend");
     input1.setAttribute("name", mailid);
     input2.setAttribute("name", mailid);
     input2.setAttribute("value", "send");
+    // input1.classList.add("mytextarea");
+    // input1.append("bjdb");
     //input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mailid + "')");
 
     inputdiv.append(label);
@@ -273,8 +280,9 @@ function search() {
           const label = document.createElement("label");
           // label.innerText = "Type a message-";
 
-          var input1 = document.createElement("input");
+          var input1 = document.createElement("textarea");
           var input2 = document.createElement("input");
+          input1.setAttribute("id", "textarea");
           input1.setAttribute("placeholder","Type a message");
           input1.setAttribute("type", "text");
           input2.setAttribute("type", "submit");
@@ -283,6 +291,8 @@ function search() {
           input1.setAttribute("name", mail);
           input2.setAttribute("name", mail);
           input2.setAttribute("value", "send");
+          // input1.classList.add("mytextarea");
+          // input1.append("bjdb");
           input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mail + "')");
 
           inputdiv.append(label);

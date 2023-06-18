@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css">
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v6.4.0/css/all.css'>
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v6.4.0/css/fontawesome.css'>
     <script src="https://kit.fontawesome.com/e96e2deb4c.js" crossorigin="anonymous"></script>
@@ -16,9 +17,26 @@
     <script defer src="http://localhost:5001/socket.io/socket.io.js"></script>
     <script defer src="home.js"></script>
     <link rel="stylesheet" href="chatpage.css">
-</head>
-
-<body id="homepage">
+    <!-- <script src="https://cdn.tiny.cloud/1/j3yfy1z6qdpglzleo6q23qajvujla6yiyjje8a94v4g4x0gx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>    <script>
+        tinymce.init({
+          selector: ".mytextarea",
+          plugins: "emoticons",
+          toolbar: "emoticons",
+          toolbar_location: "top",
+          menubar: false
+        });
+      </script> -->
+    </head>
+    
+    <body id="homepage">
+        <textarea id="textarea"></textarea>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
+    <script>
+        $('#textarea').emojioneArea({
+            pickerPosition:'bottom'
+        })
+    </script>
     <div class="user">
         <div class="icon">
             <div class="iconchild"><img src="images/chaticon.png" id="icon"></div>
