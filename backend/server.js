@@ -261,6 +261,48 @@ app.get("//:id/verify/:token", async (req, res) => {
     }
 });
 
+app.get("/editprofile" , async (req,res)=> {
+    var usr = null;
+    try {
+        let token = req.cookies.jwt;
+        const verifyuser = jwt.verify(token, password.jwtprivatekey);
+        usr = await User.findOne({
+            _id: verifyuser._id
+        });
+  
+        res.render(path.join(__dirname, "../frontend/editprofile.ejs"), { usr });
+
+        app.post("/editprofile" , upload ,async (req,res)=>{
+    
+            if(req.body.fname)
+            {
+                usr.fname = req.body.fname;
+            }
+            if(req.body.lname)
+            {
+                usr.lname = req.body.lname;
+            }
+            if(req.body.mnumber)
+            {
+                usr.mnum = req.body.mnumber;
+            }
+            if(req.file)
+            {
+                usr.profpic = req.file.filename;
+            }
+
+            await usr.save();
+            res.redirect("/");
+            
+        })
+  
+      }
+      catch(error)
+      {
+        res.redirect("/signin");
+      }
+  })
+
 app.listen(3000, () => {
     console.log("Server on 3000");
 })  

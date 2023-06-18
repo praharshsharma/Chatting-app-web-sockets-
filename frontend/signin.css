@@ -197,4 +197,21 @@ a:link{
 	padding-top: 10%;
 }
 
+/* .editimg{
+	height: 10%;
+	width: 10%;
+} */
+
+#icon2{
+	position: relative;
+	top: 5%;
+	left:37%;
+	z-index: 1;
+	height: 100px;
+	width: 100px;
+	border-radius: 50%;
+}
+
+
+
 
