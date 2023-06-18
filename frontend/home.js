@@ -73,9 +73,10 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute , profpi
     var inputdiv = document.createElement("div");
     inputdiv.classList.add("msg-input-div");
     const label = document.createElement("label");
-    label.innerText = "Type a message-";
+    // label.innerText = "Type a message-";
     var input1 = document.createElement("input");
     var input2 = document.createElement("input");
+    input1.setAttribute("placeholder","Type a message");
     input1.setAttribute("type", "text");
     input2.setAttribute("type", "submit");
     input1.setAttribute("class", "textbox");
@@ -266,10 +267,11 @@ function search() {
           var inputdiv = document.createElement("div");
           inputdiv.classList.add("msg-input-div");
           const label = document.createElement("label");
-          label.innerText = "Type a message-";
+          // label.innerText = "Type a message-";
 
           var input1 = document.createElement("input");
           var input2 = document.createElement("input");
+          input1.setAttribute("placeholder","Type a message");
           input1.setAttribute("type", "text");
           input2.setAttribute("type", "submit");
           input1.setAttribute("class", "textbox");
