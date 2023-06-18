@@ -10,7 +10,11 @@ var button = document.querySelectorAll(".msgsend");
 var usn = document.querySelectorAll(".usn");
 var right = document.querySelectorAll(".right");
 
-
+var prof = document.querySelector('.profile');
+var dbb=document.getElementsByClassName('dabba');
+prof.addEventListener('click',()=>{
+  dbb[0].classList.toggle('hide');
+})
 
 function handleKeyPress(event, nameofcurr) {
   if (event.keyCode === 13) {

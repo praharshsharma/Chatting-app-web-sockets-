@@ -98,7 +98,9 @@
 .r {
     float: right;
     clear: both;
-    background-color: #579ffb;
+    /* background-color: #579ffb; */
+    background-color: #776BCC;
+    /* background-color: #4C489D; */
 }
 
 .sear,.cmsg{
@@ -131,6 +133,13 @@ img{
     border-radius: 50%;
 }
 
+.bigp{
+  
+    height: 18vh;
+    width: 18vh;
+    border-radius: 50%;
+
+}
 
 .search-input-div{
   display: flex;
@@ -163,6 +172,8 @@ img{
     flex: 1;
     background: #ddd;
   }
+
+  
 
   .msgsend {
     margin-left: 10px;
@@ -200,3 +211,65 @@ img{
   cursor: pointer;
   background-color: #bdbdbd;
 }
+
+
+.dabba{
+  padding: 3%;
+  background-color: #eee;
+  position: fixed;
+  right:1%;
+  top:10%;
+  z-index: 3;
+  text-align: center;
+  border-radius: 10%;
+}
+/* .fa-message{
+  height: 60%;
+} */
+
+.bigprof{
+  padding-bottom:16%;
+}
+
+.fulln{
+  /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+  font-style: italic;
+  font-weight: bolder;
+  font-size: x-large;
+}
+
+i{
+  height: 15px;
+  width:15px;
+}
+
+.button__icon {
+	font-size: 24px;
+	margin-left: auto;
+	color: #7875B5;
+}
+.login__submit {
+	background: #fff;
+	font-size: 14px;
+	margin-top: 30px;
+	padding: 16px 20px;
+	border-radius: 26px;
+	border: 1px solid #D4D3E8;
+	text-transform: uppercase;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	color: #4C489D;
+	box-shadow: 0px 2px 2px #5C5696;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.login__submit:active,
+.login__submit:focus,
+.login__submit:hover {
+	border-color: #6A679E;
+	outline: none;
+}
+
