@@ -10,6 +10,9 @@
   .right::-webkit-scrollbar {
     width: 6px;
   }
+  .left::-webkit-scrollbar {
+    display: none;
+  }
   .right::-webkit-scrollbar-track {
     background: #ddd;
   }
@@ -54,13 +57,17 @@
     margin-right: 8%;
 }
 
+.dec{
+  display: inline-block;
+}
+
 .user{
-    text-align: right;
     background-color: #776BCC;
+    width: 100%;
 }
 
 .icon{
-  position: fixed;
+  position: absolute;
   left:42%
 }
 .iconchild{
@@ -75,15 +82,9 @@
     display: inline-block;
     vertical-align: middle;
     font-size:larger ;
-    color: white;
+    color: black;
     
 }
-/* .parent2{
-  background-color: white;
-  width: fit-content;
-  height: fit-content;
-  /* text-align: right;
-} */
 
 .l {
     float: left;
@@ -184,4 +185,18 @@ img{
 
 .usn:hover{
     background-color: #bdbdbd;
+}
+
+.profile{
+  position: relative;
+  right: -90%;
+  width: fit-content;
+  background-color:  #eee;
+  color: black;
+  padding: 0 1% 0 1%;
+}
+
+.profile:hover{
+  cursor: pointer;
+  background-color: #bdbdbd;
 }

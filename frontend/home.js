@@ -350,9 +350,26 @@ function search() {
                 msgbox.querySelector(".chats").append(msg);
 
                 socket.emit("send-message", currmsg, nameofcurr,hour,minute);
-              }
 
+                left.innerText = "";
+          usn.forEach((curr)=>{
+            if(curr.classList[1] == nameofcurr)
+            {
+              left.append(curr);
+            }
+          })
+
+          usn.forEach((curr)=>{
+            if(curr.classList[1] != nameofcurr)
+            {
+              left.append(curr);
+            }
+          })
+              }
+              
               chats.scrollTop = chats.scrollHeight;
+              usn = document.querySelectorAll(".usn");
+          right = document.querySelectorAll(".right");
             });
           });
 
