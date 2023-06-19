@@ -23,8 +23,7 @@ It is a secure, scalable and feasible application that provides an interface for
 ```sh
 git clone https://github.com/praharshsharma/MERN1.git
 ```
-<br><br>
-Create a password.js file in backend folder<br>
+Create a password.js file in backend folder<br><br>
 ![](frontend/images/demo4.jpeg)<br>
 - email -> Enter the email id from which the verification mail would be sent
 - pass -> Generate app password for the above entered email id
