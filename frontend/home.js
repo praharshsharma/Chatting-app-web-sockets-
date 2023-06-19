@@ -92,10 +92,7 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute, profpic
     input1.setAttribute("name", mailid);
     input2.setAttribute("name", mailid);
     input2.setAttribute("value", "send");
-    // input1.classList.add("mytextarea");
-    // input1.append("bjdb");
-    //input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mailid + "')");
-    // input1.classList.add("textarea");
+  
 
     inputdiv.append(label);
     inputdiv.append(input1);
@@ -157,9 +154,6 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute, profpic
     msgbox.querySelector(".chats").append(msg);
 
     button = document.querySelectorAll(".msgsend");
-    // message.forEach((currElement) => {
-    //   currElement.removeAttribute("onkeydown");
-    // })
     message = document.querySelectorAll(".textbox");
 
 
@@ -229,9 +223,7 @@ socket.on("receive-message", (textmsg, mailid, sendername, hour, minute, profpic
           if (curr.id == idforsearch) {
             curr.classList.remove("hide");
             message.forEach((elem) => {
-              console.log(elem.name);
               if (elem.name == idforsearch) {
-                console.log("207 line");
                 elem.setAttribute("onkeydown", "handleKeyPress(event, '" + idforsearch + "')");
               }
               else {
@@ -284,7 +276,6 @@ function search() {
           var inputdiv = document.createElement("div");
           inputdiv.classList.add("msg-input-div");
           const label = document.createElement("label");
-          // label.innerText = "Type a message-";
 
           var input1 = document.createElement("input");
           var input2 = document.createElement("input");
@@ -296,9 +287,7 @@ function search() {
           input1.setAttribute("name", mail);
           input2.setAttribute("name", mail);
           input2.setAttribute("value", "send");
-          // input1.classList.add("mytextarea");
-          // input1.append("bjdb");
-          // input1.classList.add("textarea");
+         
           input1.setAttribute("onkeydown", "handleKeyPress(event, '" + mail + "')");
           
           inputdiv.append(label);
@@ -412,9 +401,7 @@ function search() {
                 if (curr.id == idforsearch) {
                   curr.classList.remove("hide");
                   message.forEach((elem) => {
-                    console.log(elem.name);
                     if (elem.name == idforsearch) {
-                      console.log("207 line");
                       elem.setAttribute("onkeydown", "handleKeyPress(event, '" + idforsearch + "')");
                     }
                     else {
@@ -435,6 +422,5 @@ function search() {
         }
       }
 
-      console.log(result);
     });
 }
