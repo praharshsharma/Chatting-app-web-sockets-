@@ -41,6 +41,11 @@ npm install
 ```sh
 cd backend
 nodemon server.js
+
+or
+
+npm start
+
 ```
 It runs on the browser with localhost 3000.
 ```sh
