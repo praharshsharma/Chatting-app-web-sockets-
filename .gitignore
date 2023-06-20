@@ -1,5 +1,4 @@
 /node_modules
-/.env
 /todo.txt
 backend/password.js
 frontend/rough.js
