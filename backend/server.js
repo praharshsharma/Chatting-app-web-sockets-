@@ -14,6 +14,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const userModel = require("./models/user");
 const socketModel = require("./models/socketId");
+const nameModel = require("./models/usernames");
 const staticPath = path.join(__dirname, "../frontend");
 const io = require('socket.io')(5001, {
     cors: {
@@ -29,18 +30,30 @@ connection();
 
 const Storage = multer.diskStorage({
     destination: "./frontend/uploads",
-    filename: (req,file,cb)=>{
-        cb(null,file.fieldname+"_" +Date.now()+path.extname(file.originalname));
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
     }
 })
 
 const upload = multer({
-    storage:Storage
+    storage: Storage
 }).single('profile')
 
 const User = userModel.User;
 const Socket = socketModel.socketmodel;
-
+const Name = nameModel.namemodel;
+app.get("/livesearch", async (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/home2.html"));
+})
+app.post("/getf", async (req, res) => {
+    let payload = req.body.payload.trim();
+    // console.log("in getf ");
+    // console.log(payload);
+    let search = await Name.find({ name: {$regex: new RegExp('^'+payload+'.*','i')}}).exec();
+    //limit search results to 10
+    search = search.slice(0, 10); 
+    res.send({ payload: search });
+})
 app.get("/", async (req, res) => {
     //check cookie
     //if signin true  then displays data
@@ -94,7 +107,7 @@ app.get("/", async (req, res) => {
                 return;
             })
 
-            socket.on('send-message', async (message, mail,hour,minute) => {
+            socket.on('send-message', async (message, mail, hour, minute) => {
                 if (message) {
                     const reciever = await Socket.findOne({
                         userId: mail
@@ -104,7 +117,7 @@ app.get("/", async (req, res) => {
                     var sender = usr.email;
 
                     arr.forEach((currElement) => {
-                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname+" "+usr.lname,hour,minute,usr.profpic);
+                        socket.to(currElement.id).emit('receive-message', message, sender, usr.fname + " " + usr.lname, hour, minute, usr.profpic);
                     })
                 }
             })
@@ -142,7 +155,7 @@ app.get("/", async (req, res) => {
 
     app.post('/endpoint', async (req, res) => {
         const mail = req.body.name;
-        
+
         const user = await Socket.findOne({
             userId: mail
         });
@@ -150,7 +163,7 @@ app.get("/", async (req, res) => {
             const dbuser = await User.findOne({
                 email: user.userId
             });
-            res.json({ receivername: dbuser.fname+" "+dbuser.lname , profpic : dbuser.profpic});
+            res.json({ receivername: dbuser.fname + " " + dbuser.lname, profpic: dbuser.profpic });
         }
         else {
             res.json({ message: "User not found" });
@@ -249,7 +262,7 @@ app.get("//:id/verify/:token", async (req, res) => {
                 lname: req.body.lname,
                 password: req.body.password,
                 mnum: req.body.mnumber,
-                profpic : req.file.filename,
+                profpic: req.file.filename,
                 verified: true
             })
             await newUser.save();
@@ -261,7 +274,7 @@ app.get("//:id/verify/:token", async (req, res) => {
     }
 });
 
-app.get("/editprofile" , async (req,res)=> {
+app.get("/editprofile", async (req, res) => {
     var usr = null;
     try {
         let token = req.cookies.jwt;
@@ -269,39 +282,34 @@ app.get("/editprofile" , async (req,res)=> {
         usr = await User.findOne({
             _id: verifyuser._id
         });
-  
+
         res.render(path.join(__dirname, "../frontend/editprofile.ejs"), { usr });
 
-        app.post("/editprofile" , upload ,async (req,res)=>{
-    
-            if(req.body.fname)
-            {
+        app.post("/editprofile", upload, async (req, res) => {
+
+            if (req.body.fname) {
                 usr.fname = req.body.fname;
             }
-            if(req.body.lname)
-            {
+            if (req.body.lname) {
                 usr.lname = req.body.lname;
             }
-            if(req.body.mnumber)
-            {
+            if (req.body.mnumber) {
                 usr.mnum = req.body.mnumber;
             }
-            if(req.file)
-            {
+            if (req.file) {
                 usr.profpic = req.file.filename;
             }
 
             await usr.save();
             res.redirect("/");
-            
+
         })
-  
-      }
-      catch(error)
-      {
+
+    }
+    catch (error) {
         res.redirect("/signin");
-      }
-  })
+    }
+})
 
 app.listen(3000, () => {
     console.log("Server on 3000");
