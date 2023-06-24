@@ -13,7 +13,7 @@
 
 # Introduction
 
-It is a secure, scalable and feasible application that provides an interface for multiple users chatting at the same time.
+It is a secure, scalable, and feasible application that provides an interface for multiple users to chat at the same time.
 
 # Quick Start 
 
@@ -23,10 +23,10 @@ It is a secure, scalable and feasible application that provides an interface for
 ```sh
 git clone https://github.com/praharshsharma/MERN1.git
 ```
-Create a password.js file in backend folder<br><br>
+Create a password.js file in the backend folder<br><br>
 ![](frontend/images/demo4.jpeg)<br>
 - email -> Enter the email id from which the verification mail would be sent
-- pass -> Generate app password for the above entered email id
+- pass -> Generate app password for the above-entered email id
 - jwtprivatekey -> any string
 - uri -> your database uri
 
